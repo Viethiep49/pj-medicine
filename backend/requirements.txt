@@ -20,12 +20,10 @@ python-multipart==0.0.20
 # --- Redis ---
 redis==6.2.0
 
-# --- ML / NLP (sẽ được ML Engineer bổ sung) ---
-# torch>=2.0
-# transformers>=4.40
-# underthesea>=6.8
-# scikit-learn>=1.4
-# optuna>=3.6
+# --- ML Inference (weights train sẵn trên Kaggle, backend chỉ load + chạy inference) ---
+torch>=2.3.0
+transformers>=4.40.0
+sentencepiece>=0.2.0      # XLM-RoBERTa tokenizer yêu cầu sentencepiece
 
 # --- Utils ---
 python-dotenv==1.1.0

@@ -132,17 +132,17 @@ export default function App() {
         {/* Hero Section */}
         <main className="max-w-6xl mx-auto px-6 py-24 flex flex-col items-center text-center" id="overview">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-primary text-sm font-semibold mb-8 border border-blue-100/50">
-            <Zap className="w-4 h-4" /> 
-            Zero-latency Switching & Sub-quadratic Complexity
+            <Zap className="w-4 h-4" />
+            Cross-lingual NLP · Dynamic LoRA Switching · XAI Ready
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold font-heading text-text leading-[1.1] mb-6 max-w-4xl tracking-tight">
             Dự đoán Nhóm thuốc với <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              Mamba-3 & Multi-LoRA
+              XLM-RoBERTa + Multi-LoRA
             </span>
           </h1>
           <p className="text-xl text-text/60 mb-12 max-w-2xl leading-relaxed">
-            Hệ thống hỗ trợ quyết định lâm sàng thế hệ mới. Áp dụng kiến trúc Dynamic Expert Switching giúp phân loại bệnh án tiếng Việt với độ trễ tính bằng mili-giây, vượt trội hơn mô hình Transformer truyền thống.
+            Hệ thống hỗ trợ quyết định lâm sàng thế hệ mới. Áp dụng kiến trúc Dynamic Expert Switching với XLM-RoBERTa đa ngữ giúp phân loại bệnh án tiếng Việt chính xác, không cần dịch thuật.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
             <button 
@@ -163,7 +163,7 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex flex-col items-center text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-heading text-text mb-4">Kiến trúc Dynamic Expert Switching</h2>
-              <p className="text-text/60 max-w-2xl text-lg">Tận dụng tốc độ của State Space Model (Mamba-3) và tính chuyên biệt của nhiều LoRA Adapters khác nhau cho từng chuyên khoa.</p>
+              <p className="text-text/60 max-w-2xl text-lg">Tận dụng sức mạnh đa ngữ của XLM-RoBERTa và tính chuyên biệt của nhiều LoRA Adapters khác nhau cho từng chuyên khoa.</p>
             </div>
             
             {/* Visual Workflow */}
@@ -187,7 +187,7 @@ export default function App() {
                     <Layers className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-lg mb-2 text-primary">2. Multi-LoRA Loading</h3>
-                  <p className="text-sm text-text/60">Nạp động (Dynamic Loading) Adapter .safetensors tương ứng vào Mamba-3 Base Model đang chạy trên RAM.</p>
+                  <p className="text-sm text-text/60">Nạp động (Dynamic Loading) Adapter .safetensors tương ứng vào XLM-RoBERTa Base Model đang chạy trên RAM.</p>
                 </div>
 
                 {/* Step 3 */}
@@ -196,7 +196,7 @@ export default function App() {
                     <BrainCircuit className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-lg mb-2">3. AI Inference</h3>
-                  <p className="text-sm text-text/60">Mamba-3 thực hiện dự đoán phân loại đa nhãn (Multi-label) với độ phức tạp tuyến tính O(N).</p>
+                  <p className="text-sm text-text/60">XLM-RoBERTa + LoRA thực hiện dự đoán phân loại nhóm thuốc với cơ chế attention đa ngữ, hỗ trợ tiếng Việt tự nhiên.</p>
                 </div>
 
                 {/* Step 4 */}
@@ -226,7 +226,7 @@ export default function App() {
                 <Cpu className="w-10 h-10 text-primary mb-6 group-hover:scale-110 transition-transform" />
                 <h3 className="text-xl font-bold font-heading mb-4">Core AI & ML</h3>
                 <ul className="space-y-3 text-text/70">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Mamba-3 Architecture</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> XLM-RoBERTa (Multilingual)</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Hugging Face PEFT (LoRA)</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> PyTorch Framework</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> VnCoreNLP / Underthesea</li>
@@ -348,7 +348,7 @@ export default function App() {
           <header className="mb-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-bold text-text/60 mb-4 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Adapter Active: LoRA_{activeSpecialty.id.toUpperCase()}_v1.2
+              XLM-RoBERTa · LoRA_{activeSpecialty.id.toUpperCase()}_v1.0
             </div>
             <h2 className="text-3xl font-bold font-heading text-text">Dữ liệu Lâm sàng</h2>
           </header>
@@ -371,7 +371,7 @@ export default function App() {
               {isLoading ? (
                 <>
                   <Activity className="w-5 h-5 animate-pulse text-primary" />
-                  Mamba-3 Đang Inference...
+                  XLM-RoBERTa Đang Inference...
                 </>
               ) : (
                 <>
@@ -397,10 +397,10 @@ export default function App() {
                 </div>
                 <div className="flex flex-col items-end gap-1">
                   <div className="px-3 py-1 bg-gray-50 rounded-md border border-gray-200 text-xs font-mono font-medium text-text/70">
-                    Model: mamba-3-base
+                    Model: xlm-roberta-base + LoRA
                   </div>
                   <div className="px-3 py-1 bg-blue-50/50 rounded-md border border-blue-100 text-xs font-mono font-medium text-primary">
-                    Latency: ~0.14s (O(N))
+                    Framework: PyTorch + PEFT
                   </div>
                 </div>
               </div>
