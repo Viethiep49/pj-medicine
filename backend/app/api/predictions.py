@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 import hashlib
 import json
 import redis.asyncio as redis
@@ -7,6 +7,7 @@ import logging
 from app.schemas import PredictionRequest, PredictionResponse, PredictionResultItem
 from ml.inference import predict_drug_groups
 from app.config import settings
+from app.limiter import limiter
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -15,9 +16,10 @@ logger = logging.getLogger(__name__)
 redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
 
 @router.post("/predict", response_model=PredictionResponse)
-async def predict(request: PredictionRequest):
+@limiter.limit("20/minute")
+async def predict(request: Request, body: PredictionRequest):
     # Create cache key
-    cache_key = hashlib.sha256(request.text.encode('utf-8')).hexdigest()
+    cache_key = hashlib.sha256(body.text.encode('utf-8')).hexdigest()
     
     # Try to get from Redis
     try:
@@ -32,7 +34,7 @@ async def predict(request: PredictionRequest):
         
     # Call the ML model directly
     try:
-        prediction_results = predict_drug_groups(request.text, top_k=request.top_k)
+        prediction_results = predict_drug_groups(body.text, top_k=body.top_k)
         
         # Convert objects to dicts for JSON serialization
         results_data = []

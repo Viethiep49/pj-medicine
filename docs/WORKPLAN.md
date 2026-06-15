@@ -45,19 +45,19 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Chạy `python data_pipeline.py download` để tải 6 datasets
 
 ### Backend Developer
-- [ ] Implement SQLAlchemy models (`backend/app/models/`):
+- [x] Implement SQLAlchemy models (`backend/app/models/`):
   - `user.py` — bảng users
   - `patient.py` — bảng patients
   - `medical_record.py` — bảng medical_records + record_symptoms
   - `drug_group.py` — bảng drug_groups
   - `prediction.py` — bảng predictions
   - `model_config.py` — bảng model_configs + model_metrics
-- [ ] Setup Alembic: `alembic init`, tạo migration V1
-- [ ] Implement `backend/app/db/session.py` — async SQLAlchemy engine + get_db dependency
-- [ ] Verify `backend/app/config.py` đọc đúng `.env`
+- [x] Setup Alembic: `alembic init`, tạo migration V1
+- [x] Implement `backend/app/db/session.py` — async SQLAlchemy engine + get_db dependency
+- [x] Verify `backend/app/config.py` đọc đúng `.env`
 
 ### Frontend Dev 1
-- [ ] Thêm 3 chuyên khoa còn thiếu vào `SPECIALTIES`: Thần Kinh, Tiêu Hóa, Nội Tiết (2 cases mỗi loại)
+- [x] Thêm 3 chuyên khoa còn thiếu vào `SPECIALTIES`: Thần Kinh, Tiêu Hóa, Nội Tiết (2 cases mỗi loại)
 - [ ] Tách `App.tsx` thành components:
   - `components/LandingPage.tsx`
   - `components/Dashboard.tsx`
@@ -65,17 +65,17 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Thiết kế wireframe `PatientForm` (nhập thông tin trước khi phân tích)
 
 ### Frontend Dev 2
-- [ ] Cập nhật `src/types/index.ts` — TypeScript interfaces khớp backend schemas:
+- [x] Cập nhật `src/types/index.ts` — TypeScript interfaces khớp backend schemas:
   ```ts
   interface PredictionResult { drug_group_name: string; confidence: number; rank: number; }
   interface XAIToken { token: string; score: number; }
   interface DrugGroup { id: string; name: string; category: string; common_drugs: string[]; }
   ```
-- [ ] Implement `src/services/api.ts`:
+- [x] Implement `src/services/api.ts`:
   - `predictDrugGroups(text, specialtyId)` — POST /api/v1/predict
   - `getHistory(page, limit)` — GET /api/v1/predict/history
   - `getDrugGroups()` — GET /api/v1/drug-groups
-- [ ] Setup Axios base URL, interceptors (error handling, loading)
+- [x] Setup Axios base URL, interceptors (error handling, loading)
 
 ### Data & Analytics
 - [ ] Thêm vào `schema.sql`:
@@ -123,30 +123,30 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Thêm loader `ViMedAQA` (`tmnam20/ViMedAQA`) vào notebook training
 
 ### Backend Developer
-- [ ] Implement Pydantic schemas (`backend/app/schemas/`):
+- [x] Implement Pydantic schemas (`backend/app/schemas/`):
   - `PredictRequest(text: str, specialty_id: str, top_k: int = 3)`
   - `PredictionResultItem(drug_group_name, confidence, rank)`
   - `PredictResponse(results: list[PredictionResultItem], latency_ms: int)`
   - `RecordCreate`, `RecordResponse`, `PatientCreate`, `PatientResponse`
-- [ ] Implement API routers:
+- [x] Implement API routers:
   - `POST /api/v1/predict` — gọi `inference.predict_drug_groups()`
   - `POST /api/v1/predict/explain` — gọi `inference.explain()`
   - `GET  /api/v1/predict/history` — query bảng `predictions`
   - `GET  /api/v1/drug-groups` — query bảng `drug_groups`
-- [ ] Wire model vào `lifespan()` trong `main.py`: `load_model()` lúc startup
-- [ ] Register routers vào `main.py`
+- [x] Wire model vào `lifespan()` trong `main.py`: `load_model()` lúc startup
+- [x] Register routers vào `main.py`
 
 ### Frontend Dev 1
 - [ ] Build `SpecialtySelector` component — tabs chuyên khoa với icon
 - [ ] Build `ClinicalInput` component — textarea + trường sinh hiệu (nhiệt độ, HA, SpO2, nhịp thở)
 - [ ] Build `XAIPanel` component — hiển thị token với màu heatmap (đỏ cao → xanh thấp)
-- [ ] Thiết kế `HistoryPage` layout
+- [x] Thiết kế `HistoryPage` layout
 
 ### Frontend Dev 2
-- [ ] Thay `analyzeText()` mock setTimeout → gọi `api.predictDrugGroups()` thật
-- [ ] Implement loading skeleton trong `PredictionResult`
-- [ ] Implement toast notification (react-hot-toast) khi API lỗi
-- [ ] Load danh sách chuyên khoa từ `api.getDrugGroups()` thay hardcode
+- [x] Thay `analyzeText()` mock setTimeout → gọi `api.predictDrugGroups()` thật
+- [x] Implement loading skeleton trong `PredictionResult`
+- [x] Implement toast notification (react-hot-toast) khi API lỗi
+- [x] Load danh sách chuyên khoa từ `api.getDrugGroups()` thay hardcode
 
 ### Data & Analytics
 - [ ] Implement `backend/app/api/analytics.py`:
@@ -172,29 +172,29 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Ghi kết quả vào `docs/training_results.md` (accuracy, macro-F1, confusion matrix, per-class)
 
 ### Backend Developer
-- [ ] Implement Redis cache cho `/predict`:
+- [x] Implement Redis cache cho `/predict`:
   - Cache key: `sha256(text.encode()).hexdigest()`
   - TTL: 3600 giây
   - Fallback nếu Redis down: gọi thẳng model
-- [ ] Implement `POST /api/v1/patients`, `GET /api/v1/patients`
-- [ ] Implement `POST /api/v1/records`, `GET /api/v1/records`
-- [ ] Seed `drug_groups` từ `taxonomy.py` vào DB (`scripts/seed_drug_groups.py`)
+- [x] Implement `POST /api/v1/patients`, `GET /api/v1/patients`
+- [x] Implement `POST /api/v1/records`, `GET /api/v1/records`
+- [x] Seed `drug_groups` từ `taxonomy.py` vào DB (`scripts/seed_drug_groups.py`)
 
 
 ### Frontend Dev 1
-- [ ] Build `AnalyticsDashboard` page với Recharts:
+- [x] Build `AnalyticsDashboard` page với Recharts:
   - Biểu đồ cột: top 5 nhóm thuốc được dự đoán nhiều nhất
   - Biểu đồ đường: lượng dự đoán theo ngày (30 ngày)
   - Biểu đồ tròn: phân bố theo chuyên khoa
   - Card stat: tổng dự đoán, trung bình confidence, accuracy rate
-- [ ] Build `PatientSearch` component — tìm theo tên / mã BN với debounce 300ms
+- [x] Build `PatientSearch` component — tìm theo tên / mã BN với debounce 300ms
 - [ ] Responsive: đảm bảo hoạt động trên màn hình tablet 768px
 
 ### Frontend Dev 2
-- [ ] Implement `HistoryPage` — phân trang, sort theo ngày, filter theo chuyên khoa
-- [ ] Implement XAI token highlight thật — nhận data từ `/predict/explain`, tô màu trên textarea
-- [ ] Implement patient search flow: search → chọn BN → load lịch sử bệnh án
-- [ ] Lazy load `HistoryPage` và `AnalyticsDashboard` để giảm bundle size
+- [x] Implement `HistoryPage` — phân trang, sort theo ngày, filter theo chuyên khoa
+- [x] Implement XAI token highlight thật — nhận data từ `/predict/explain`, tô màu trên textarea
+- [x] Implement patient search flow: search → chọn BN → load lịch sử bệnh án
+- [x] Lazy load `HistoryPage` và `AnalyticsDashboard` để giảm bundle size
 
 ### Data & Analytics
 - [ ] Implement `GET /api/analytics/daily-usage` — 30 ngày gần nhất, GROUP BY DATE
