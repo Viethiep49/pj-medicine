@@ -130,4 +130,4 @@ pj-medicine/
 
 Dự án phục vụ mục đích nghiên cứu và học tập.
 
-© 2026 Drug-Pred AI Team — HUTECH
+© 2026 Drug-Pred AI Team — HUTECHdsfsdfsdfsdfsdfsdfsdf
