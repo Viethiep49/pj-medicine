@@ -1,16 +1,16 @@
 # 🏥 Drug-Pred AI
 
-> Hệ thống dự đoán nhóm thuốc từ mô tả bệnh án tiếng Việt — sử dụng kiến trúc Mamba SSM + Multi-LoRA
+> Hệ thống dự đoán nhóm thuốc từ mô tả bệnh án tiếng Việt — sử dụng kiến trúc XLM-RoBERTa + Multi-LoRA
 
 ## 📋 Tổng quan
 
-Drug-Pred AI là hệ thống hỗ trợ quyết định lâm sàng (CDSS) giúp dự đoán nhóm thuốc phù hợp dựa trên mô tả triệu chứng và bệnh án của bệnh nhân, sử dụng mô hình học sâu Mamba (State Space Model).
+Drug-Pred AI là hệ thống hỗ trợ quyết định lâm sàng (CDSS) giúp dự đoán nhóm thuốc phù hợp dựa trên mô tả triệu chứng và bệnh án của bệnh nhân, sử dụng mô hình học sâu XLM-RoBERTa + LoRA.
 
 ### Kiến trúc
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   React +    │     │   FastAPI    │     │  Mamba SSM   │
+│   React +    │     │   FastAPI    │     │ XLM-RoBERTa  │
 │  TypeScript  │────▶│   Python     │────▶│  + LoRA      │
 │   Frontend   │     │   Backend    │     │  ML Engine   │
 └──────────────┘     └──────┬───────┘     └──────────────┘
@@ -111,7 +111,7 @@ pj-medicine/
 |-------|-----------|
 | **Frontend** | React 19 · TypeScript · Vite · Tailwind CSS |
 | **Backend** | FastAPI · Python 3.11 · SQLAlchemy · Pydantic |
-| **ML Engine** | PyTorch · Mamba SSM · HuggingFace · Underthesea |
+| **ML Engine** | PyTorch · XLM-RoBERTa · HuggingFace · LoRA |
 | **Database** | PostgreSQL 16 · Redis 7 |
 | **DevOps** | Docker · GitHub Actions |
 

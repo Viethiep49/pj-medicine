@@ -197,8 +197,8 @@ export default function HistoryPage() {
           <span className="text-sm text-text/75 font-semibold">Sắp xếp:</span>
           <select
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as any)}
-            className="text-xs font-semibold border border-gray-200 rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            onChange={(e) => setSortOrder(e.target.value as "desc" | "asc")}
+            className="px-3 py-2 border-2 border-gray-100 bg-gray-50/50 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
           >
             <option value="desc">Mới nhất trước</option>
             <option value="asc">Cũ nhất trước</option>

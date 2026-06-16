@@ -48,6 +48,12 @@ node_modules/
 *.safetensors
 *.bin
 *.onnx
+*.zip
+backend/ml/models/drugpred-model/
+
+# Database
+*.db
+*.sqlite3
 
 # Docker
 .docker/

@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080" font-family="'Noto Sans', 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="resShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#164E63" flood-opacity="0.10"/>
+    </filter>
+    <filter id="sideShadow" x="-50%" y="-10%" width="160%" height="120%">
+      <feDropShadow dx="2" dy="0" stdDeviation="10" flood-color="#94A3B8" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- MAIN BG -->
+  <rect x="320" y="0" width="1120" height="1080" fill="#ECFEFF"/>
+
+  <!-- ============ SIDEBAR ============ -->
+  <g filter="url(#sideShadow)">
+    <rect x="0" y="0" width="320" height="1080" fill="#FFFFFF"/>
+  </g>
+  <line x1="320" y1="0" x2="320" y2="1080" stroke="#E5E7EB"/>
+
+  <!-- side top bar -->
+  <rect x="0" y="0" width="320" height="64" fill="#FAFBFC"/>
+  <line x1="0" y1="64" x2="320" y2="64" stroke="#F3F4F6"/>
+  <rect x="16" y="16" width="32" height="32" rx="6" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <g transform="translate(26,24)" stroke="#164E63" stroke-opacity="0.6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 1L3 7l6 6"/></g>
+  <g transform="translate(60,20)" stroke="#0891B2" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h8M2 22h16M14 22a6 6 0 1 0 0-12h-1M8 14h2M8 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2z M11 6V4a1 1 0 0 0-1-1H9"/></g>
+  <text x="92" y="39" font-family="'Figtree', sans-serif" font-size="18" font-weight="700" fill="#0891B2">Clinical CDSS</text>
+
+  <!-- section 1 -->
+  <text x="32" y="106" font-size="11" font-weight="700" letter-spacing="1" fill="#164E63" fill-opacity="0.4">1. ROUTING CHUYÊN KHOA</text>
+  <!-- active: Hô Hấp -->
+  <rect x="16" y="120" width="288" height="44" rx="8" fill="#0891B2"/>
+  <g transform="translate(28,131)" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h12a2 2 0 1 0-2-2"/><path d="M2 11h16a2 2 0 1 1-2 2"/><path d="M2 15h9a2 2 0 1 1-2 2"/></g>
+  <text x="56" y="147" font-size="14" font-weight="600" fill="#FFFFFF">Khoa Hô Hấp</text>
+  <g transform="translate(268,132)" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="3" r="2"/><circle cx="4" cy="17" r="2"/><circle cx="16" cy="6" r="2"/><path d="M4 5v10M16 8a9 9 0 0 1-9 7"/></g>
+  <!-- Tim Mạch -->
+  <rect x="16" y="172" width="288" height="44" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(28,183)" stroke="#164E63" stroke-opacity="0.7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18S4 13.5 4 8.5A3.5 3.5 0 0 1 11 6a3.5 3.5 0 0 1 7 2.5"/><path d="M2 12h3l1.5-3 2 5 1.5-2h6"/></g>
+  <text x="56" y="199" font-size="14" font-weight="600" fill="#164E63" fill-opacity="0.7">Khoa Tim Mạch</text>
+  <!-- Thần Kinh -->
+  <rect x="16" y="224" width="288" height="44" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(28,235)" stroke="#164E63" stroke-opacity="0.7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 3 4 3 3 0 0 0 4 1 3 3 0 0 0 4-1 3 3 0 0 0 3-4 3 3 0 0 0-2-5 3 3 0 0 0-3-3 3 3 0 0 0-3-1 3 3 0 0 0-1 0z"/><path d="M10 3v15"/></g>
+  <text x="56" y="251" font-size="14" font-weight="600" fill="#164E63" fill-opacity="0.7">Khoa Thần Kinh</text>
+  <text x="24" y="288" font-size="10" fill="#164E63" fill-opacity="0.4">* Hệ thống tự động nạp LoRA Adapter</text>
+  <text x="24" y="302" font-size="10" fill="#164E63" fill-opacity="0.4">tương ứng khi chọn.</text>
+
+  <line x1="16" y1="324" x2="304" y2="324" stroke="#F3F4F6"/>
+
+  <!-- section 2 -->
+  <text x="32" y="356" font-size="11" font-weight="700" letter-spacing="1" fill="#164E63" fill-opacity="0.4">2. NẠP BỆNH ÁN MẪU</text>
+  <!-- case 1 -->
+  <rect x="16" y="372" width="288" height="100" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="30" y="398" font-size="14" font-weight="700" fill="#164E63">Viêm phổi cộng đồng</text>
+  <text x="30" y="420" font-size="11" fill="#164E63" fill-opacity="0.6">Bệnh nhân nam 45 tuổi, sốt cao 39 độ</text>
+  <text x="30" y="436" font-size="11" fill="#164E63" fill-opacity="0.6">liên tục 3 ngày nay, ho có đờm xanh</text>
+  <text x="30" y="452" font-size="11" fill="#164E63" fill-opacity="0.6">ngả vàng, đau tức ngực phải khi ho…</text>
+  <!-- case 2 -->
+  <rect x="16" y="484" width="288" height="100" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="30" y="510" font-size="14" font-weight="700" fill="#164E63">Đợt cấp COPD</text>
+  <text x="30" y="532" font-size="11" fill="#164E63" fill-opacity="0.6">Bệnh nhân nam 65 tuổi, tiền sử COPD</text>
+  <text x="30" y="548" font-size="11" fill="#164E63" fill-opacity="0.6">5 năm. Vào viện vì khó thở tăng dần,</text>
+  <text x="30" y="564" font-size="11" fill="#164E63" fill-opacity="0.6">ho đờm đục nhiều, thở rít…</text>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <!-- status pill -->
+  <rect x="384" y="80" width="372" height="32" rx="16" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <circle cx="406" cy="96" r="4" fill="#22C55E"/>
+  <text x="418" y="100" font-size="12" font-weight="700" fill="#164E63" fill-opacity="0.6">XLM-RoBERTa · LoRA_RESPIRATORY_v1.0</text>
+  <!-- title -->
+  <text x="384" y="156" font-family="'Figtree', sans-serif" font-size="28" font-weight="700" fill="#164E63">Dữ liệu Lâm sàng</text>
+
+  <!-- textarea -->
+  <rect x="384" y="178" width="920" height="200" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="406" y="214" font-size="15" fill="#164E63">Bệnh nhân nam 45 tuổi, sốt cao 39 độ liên tục 3 ngày nay, ho có đờm xanh ngả vàng, đau</text>
+  <text x="406" y="240" font-size="15" fill="#164E63">tức ngực phải khi ho. Tiền sử hút thuốc lá 10 năm. Nhịp thở 25 l/p, SpO2 94%. Phổi phải</text>
+  <text x="406" y="266" font-size="15" fill="#164E63">có ralp nổ đáy.</text>
+
+  <!-- run button -->
+  <rect x="1084" y="400" width="220" height="56" rx="14" fill="#164E63" filter="url(#resShadow)"/>
+  <text x="1108" y="434" font-size="16" font-weight="600" fill="#FFFFFF">Khởi chạy Dự đoán</text>
+  <g transform="translate(1264,420)" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M0 8h14M9 3l5 5-5 5"/></g>
+
+  <!-- ============ RESULTS CARD ============ -->
+  <rect x="384" y="484" width="920" height="560" rx="16" fill="#FFFFFF" stroke="#F3F4F6" filter="url(#resShadow)"/>
+
+  <!-- result header -->
+  <circle cx="440" cy="528" r="24" fill="#F0FDF4" stroke="#DCFCE7"/>
+  <g transform="translate(428,516)" stroke="#059669" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></g>
+  <text x="480" y="522" font-family="'Figtree', sans-serif" font-size="22" font-weight="700" fill="#164E63">Kết quả Dự đoán Nhóm thuốc</text>
+  <text x="480" y="546" font-size="13" fill="#164E63" fill-opacity="0.6">Top 3 nhóm thuốc dựa trên phân tích Multi-label</text>
+  <!-- model badges -->
+  <rect x="1080" y="506" width="192" height="24" rx="6" fill="#F9FAFB" stroke="#E5E7EB"/>
+  <text x="1176" y="522" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#164E63" fill-opacity="0.7">Model: xlm-roberta-base + LoRA</text>
+  <rect x="1100" y="536" width="172" height="24" rx="6" fill="#EFF6FF" stroke="#DBEAFE"/>
+  <text x="1186" y="552" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#0891B2">Framework: PyTorch + PEFT</text>
+
+  <line x1="416" y1="582" x2="1272" y2="582" stroke="#F3F4F6"/>
+
+  <!-- bar 1 (high / cta) -->
+  <text x="416" y="624" font-size="16" font-weight="700" fill="#164E63">Kháng sinh - Beta-lactam/Macrolide</text>
+  <text x="1272" y="626" text-anchor="end" font-family="'Figtree', sans-serif" font-size="22" font-weight="800" fill="#059669">89%</text>
+  <rect x="416" y="636" width="856" height="16" rx="8" fill="#F9FAFB" stroke="#F3F4F6"/>
+  <rect x="416" y="636" width="762" height="16" rx="8" fill="#059669"/>
+
+  <!-- bar 2 (med / primary) -->
+  <text x="416" y="696" font-size="16" font-weight="700" fill="#164E63">Thuốc giãn phế quản</text>
+  <text x="1272" y="698" text-anchor="end" font-family="'Figtree', sans-serif" font-size="22" font-weight="800" fill="#0891B2">45%</text>
+  <rect x="416" y="708" width="856" height="16" rx="8" fill="#F9FAFB" stroke="#F3F4F6"/>
+  <rect x="416" y="708" width="385" height="16" rx="8" fill="#0891B2"/>
+
+  <!-- bar 3 (med / primary) -->
+  <text x="416" y="768" font-size="16" font-weight="700" fill="#164E63">Thuốc long đờm</text>
+  <text x="1272" y="770" text-anchor="end" font-family="'Figtree', sans-serif" font-size="22" font-weight="800" fill="#0891B2">65%</text>
+  <rect x="416" y="780" width="856" height="16" rx="8" fill="#F9FAFB" stroke="#F3F4F6"/>
+  <rect x="416" y="780" width="556" height="16" rx="8" fill="#0891B2"/>
+
+  <!-- XAI -->
+  <line x1="416" y1="826" x2="1272" y2="826" stroke="#F3F4F6"/>
+  <g transform="translate(416,844)" stroke="#0891B2" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16h16"/><path d="M7 13l4-4 3 3 5-6"/></g>
+  <text x="444" y="860" font-size="14" font-weight="700" fill="#164E63">XAI Analysis (LIME/SHAP hotspots)</text>
+  <rect x="416" y="874" width="856" height="44" rx="12" fill="#F9FAFB" stroke="#F3F4F6"/>
+  <text x="432" y="901" font-size="13" fill="#164E63" fill-opacity="0.5">Từ khóa ảnh hưởng:</text>
+  <rect x="556" y="886" width="68" height="20" rx="4" fill="#FEE2E2"/>
+  <text x="590" y="900" text-anchor="middle" font-size="12" font-weight="600" fill="#B91C1C">sốt cao</text>
+  <rect x="634" y="886" width="86" height="20" rx="4" fill="#FFEDD5"/>
+  <text x="677" y="900" text-anchor="middle" font-size="12" font-weight="600" fill="#C2410C">ho có đờm</text>
+  <rect x="730" y="886" width="72" height="20" rx="4" fill="#DBEAFE"/>
+  <text x="766" y="900" text-anchor="middle" font-size="12" font-weight="600" fill="#1D4ED8">khó thở</text>
+
+  <!-- disclaimer -->
+  <rect x="416" y="938" width="856" height="80" rx="12" fill="#EFF6FF" stroke="#DBEAFE"/>
+  <g transform="translate(434,958)" stroke="#0891B2" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="9"/><path d="M10 6v5"/><path d="M10 14h.01"/></g>
+  <text x="470" y="966" font-size="13" font-weight="700" fill="#164E63">Cảnh báo Y khoa (CDSS Disclaimer):</text>
+  <text x="470" y="988" font-size="13" fill="#164E63" fill-opacity="0.8">Các gợi ý trên được trích xuất tự động từ văn bản bệnh án. Kết quả mang tính tham khảo cho công</text>
+  <text x="470" y="1006" font-size="13" fill="#164E63" fill-opacity="0.8">tác nghiên cứu khoa học, không thay thế phác đồ điều trị và tư vấn của bác sĩ chuyên môn.</text>
+</svg>

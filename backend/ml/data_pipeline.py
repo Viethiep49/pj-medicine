@@ -129,157 +129,10 @@ def download_datasets():
 # ============================================================
 # DRUG → DRUG GROUP MAPPING
 # ============================================================
-DRUG_TO_GROUP = {
-    # === KHÁNG SINH ===
-    "Amoxicillin": "Kháng sinh - Penicillin",
-    "Ampicillin": "Kháng sinh - Penicillin",
-    "Penicillin": "Kháng sinh - Penicillin",
-    "Augmentin": "Kháng sinh - Penicillin",
-    "Azithromycin": "Kháng sinh - Macrolide",
-    "Erythromycin": "Kháng sinh - Macrolide",
-    "Clarithromycin": "Kháng sinh - Macrolide",
-    "Cephalexin": "Kháng sinh - Cephalosporin",
-    "Ceftriaxone": "Kháng sinh - Cephalosporin",
-    "Cefuroxime": "Kháng sinh - Cephalosporin",
-    "Ciprofloxacin": "Kháng sinh - Fluoroquinolone",
-    "Levofloxacin": "Kháng sinh - Fluoroquinolone",
-    "Moxifloxacin": "Kháng sinh - Fluoroquinolone",
-    "Doxycycline": "Kháng sinh - Tetracycline",
-    "Tetracycline": "Kháng sinh - Tetracycline",
-    "Metronidazole": "Kháng sinh - Nitroimidazole",
-    "Trimethoprim": "Kháng sinh - Sulfonamide",
-
-    # === GIẢM ĐAU ===
-    "Ibuprofen": "Giảm đau - NSAID",
-    "Naproxen": "Giảm đau - NSAID",
-    "Diclofenac": "Giảm đau - NSAID",
-    "Celecoxib": "Giảm đau - NSAID",
-    "Meloxicam": "Giảm đau - NSAID",
-    "Aspirin": "Giảm đau - NSAID",
-    "Acetaminophen": "Giảm đau - Paracetamol",
-    "Paracetamol": "Giảm đau - Paracetamol",
-    "Tramadol": "Giảm đau - Opioid nhẹ",
-    "Codeine": "Giảm đau - Opioid nhẹ",
-
-    # === TIM MẠCH ===
-    "Lisinopril": "Tim mạch - ACE inhibitor",
-    "Enalapril": "Tim mạch - ACE inhibitor",
-    "Ramipril": "Tim mạch - ACE inhibitor",
-    "Captopril": "Tim mạch - ACE inhibitor",
-    "Losartan": "Tim mạch - ARB",
-    "Valsartan": "Tim mạch - ARB",
-    "Irbesartan": "Tim mạch - ARB",
-    "Amlodipine": "Tim mạch - Chẹn kênh Canxi",
-    "Nifedipine": "Tim mạch - Chẹn kênh Canxi",
-    "Diltiazem": "Tim mạch - Chẹn kênh Canxi",
-    "Metoprolol": "Tim mạch - Beta blocker",
-    "Atenolol": "Tim mạch - Beta blocker",
-    "Propranolol": "Tim mạch - Beta blocker",
-    "Bisoprolol": "Tim mạch - Beta blocker",
-    "Hydrochlorothiazide": "Tim mạch - Lợi tiểu",
-    "Furosemide": "Tim mạch - Lợi tiểu",
-    "Spironolactone": "Tim mạch - Lợi tiểu",
-
-    # === TIÊU HÓA ===
-    "Omeprazole": "Tiêu hóa - PPI",
-    "Esomeprazole": "Tiêu hóa - PPI",
-    "Pantoprazole": "Tiêu hóa - PPI",
-    "Lansoprazole": "Tiêu hóa - PPI",
-    "Ranitidine": "Tiêu hóa - H2 blocker",
-    "Famotidine": "Tiêu hóa - H2 blocker",
-    "Loperamide": "Tiêu hóa - Chống tiêu chảy",
-    "Domperidone": "Tiêu hóa - Chống nôn",
-    "Ondansetron": "Tiêu hóa - Chống nôn",
-
-    # === NỘI TIẾT ===
-    "Metformin": "Nội tiết - Biguanide",
-    "Glipizide": "Nội tiết - Sulfonylurea",
-    "Gliclazide": "Nội tiết - Sulfonylurea",
-    "Insulin": "Nội tiết - Insulin",
-    "Levothyroxine": "Nội tiết - Hormone tuyến giáp",
-
-    # === HÔ HẤP ===
-    "Salbutamol": "Hô hấp - Giãn phế quản",
-    "Albuterol": "Hô hấp - Giãn phế quản",
-    "Ipratropium": "Hô hấp - Kháng cholinergic",
-    "Montelukast": "Hô hấp - Kháng leukotriene",
-    "Dextromethorphan": "Hô hấp - Giảm ho",
-    "Guaifenesin": "Hô hấp - Long đờm",
-    "Bromhexine": "Hô hấp - Long đờm",
-
-    # === THẦN KINH ===
-    "Sertraline": "Thần kinh - SSRI",
-    "Fluoxetine": "Thần kinh - SSRI",
-    "Escitalopram": "Thần kinh - SSRI",
-    "Amitriptyline": "Thần kinh - TCA",
-    "Gabapentin": "Thần kinh - Chống động kinh",
-    "Pregabalin": "Thần kinh - Chống động kinh",
-    "Carbamazepine": "Thần kinh - Chống động kinh",
-    "Diazepam": "Thần kinh - Benzodiazepine",
-    "Lorazepam": "Thần kinh - Benzodiazepine",
-    "Alprazolam": "Thần kinh - Benzodiazepine",
-    "Sumatriptan": "Thần kinh - Triptan (Migraine)",
-
-    # === DỊ ỨNG ===
-    "Cetirizine": "Dị ứng - Kháng histamine",
-    "Loratadine": "Dị ứng - Kháng histamine",
-    "Fexofenadine": "Dị ứng - Kháng histamine",
-    "Diphenhydramine": "Dị ứng - Kháng histamine",
-    "Chlorpheniramine": "Dị ứng - Kháng histamine",
-
-    # === CORTICOSTEROID ===
-    "Prednisolone": "Chống viêm - Corticosteroid",
-    "Prednisone": "Chống viêm - Corticosteroid",
-    "Dexamethasone": "Chống viêm - Corticosteroid",
-    "Hydrocortisone": "Chống viêm - Corticosteroid",
-    "Methylprednisolone": "Chống viêm - Corticosteroid",
-
-    # === DA LIỄU ===
-    "Clotrimazole": "Da liễu - Kháng nấm",
-    "Fluconazole": "Da liễu - Kháng nấm",
-    "Ketoconazole": "Da liễu - Kháng nấm",
-    "Acyclovir": "Da liễu - Kháng virus",
-
-    # === CƠ XƯƠNG KHỚP ===
-    "Allopurinol": "Cơ xương khớp - Chống gout",
-    "Colchicine": "Cơ xương khớp - Chống gout",
-    "Methotrexate": "Cơ xương khớp - DMARD",
-
-    # === KHÁC ===
-    "Warfarin": "Huyết học - Chống đông",
-    "Heparin": "Huyết học - Chống đông",
-    "Atorvastatin": "Chuyển hóa - Statin",
-    "Simvastatin": "Chuyển hóa - Statin",
-    "Rosuvastatin": "Chuyển hóa - Statin",
-}
-
-# Danh sách drug groups
-DRUG_GROUPS = sorted(set(DRUG_TO_GROUP.values()))
-
-
-def get_drug_group(drug_name: str) -> str | None:
-    """Map tên thuốc → nhóm thuốc. Fuzzy match."""
-    if not drug_name:
-        return None
-
-    name = drug_name.strip()
-
-    # Exact match
-    if name in DRUG_TO_GROUP:
-        return DRUG_TO_GROUP[name]
-
-    # Case-insensitive match
-    name_lower = name.lower()
-    for drug, group in DRUG_TO_GROUP.items():
-        if drug.lower() == name_lower:
-            return group
-
-    # Partial match (drug name contains known drug)
-    for drug, group in DRUG_TO_GROUP.items():
-        if drug.lower() in name_lower or name_lower in drug.lower():
-            return group
-
-    return None
+try:
+    from taxonomy import DRUG_TO_GROUP, DRUG_GROUPS, get_drug_group
+except ImportError:
+    from backend.ml.taxonomy import DRUG_TO_GROUP, DRUG_GROUPS, get_drug_group
 
 
 # ============================================================
@@ -592,56 +445,7 @@ def process_datasets():
         print("\n❌ Không có data. Hãy chạy `python data_pipeline.py download` trước.")
 
 
-# ============================================================
-# BƯỚC 3: DỊCH SANG TIẾNG VIỆT
-# ============================================================
-def translate_dataset():
-    """Dịch dataset từ English sang Vietnamese."""
-    import pandas as pd
 
-    input_path = PROCESSED_DIR / "merged_en.csv"
-    if not input_path.exists():
-        print(f"❌ Chưa có file {input_path}. Chạy `python data_pipeline.py process` trước.")
-        return
-
-    df = pd.read_csv(input_path)
-    print(f"📝 Đang dịch {len(df)} samples sang tiếng Việt...")
-    print("   (Có thể mất 10-30 phút tùy kích thước dataset)")
-
-    try:
-        from googletrans import Translator
-        translator = Translator()
-
-        translated_texts = []
-        errors = 0
-        batch_size = 50
-
-        for i, row in df.iterrows():
-            try:
-                result = translator.translate(row["text_en"], src="en", dest="vi")
-                translated_texts.append(result.text)
-            except Exception:
-                # Fallback: giữ nguyên text tiếng Anh
-                translated_texts.append(row["text_en"])
-                errors += 1
-
-            if (i + 1) % batch_size == 0:
-                print(f"   Đã dịch {i + 1}/{len(df)} ({errors} lỗi)")
-
-        df["text_vi"] = translated_texts
-
-        # Lưu
-        output_path = FINAL_DIR / "dataset_vi.csv"
-        df.to_csv(output_path, index=False)
-
-        print(f"\n✅ Đã dịch xong!")
-        print(f"   Output: {output_path}")
-        print(f"   Samples: {len(df)}")
-        print(f"   Lỗi dịch: {errors}")
-
-    except ImportError:
-        print("⚠️ Cần install: pip install googletrans==4.0.0-rc.1")
-        print("   Hoặc dùng MarianMT (xem hướng dẫn trong dataset_guide.md)")
 
 
 # ============================================================
@@ -758,7 +562,6 @@ Usage:
 Commands:
     download    Tải datasets từ Kaggle + HuggingFace
     process     Xử lý, merge, và tạo drug group labels
-    translate   Dịch sang tiếng Việt (Google Translate)
     split       Chia train/val/test (70/15/15)
     eda         Thống kê nhanh về dataset
     all         Chạy tất cả các bước
@@ -775,8 +578,6 @@ Ví dụ:
         download_datasets()
     elif command == "process":
         process_datasets()
-    elif command == "translate":
-        translate_dataset()
     elif command == "split":
         create_splits()
     elif command == "eda":
@@ -784,12 +585,11 @@ Ví dụ:
     elif command == "all":
         download_datasets()
         process_datasets()
-        translate_dataset()
         create_splits()
         eda()
     else:
         print(f"❌ Lệnh không hợp lệ: {command}")
-        print("   Dùng: download | process | translate | split | eda | all")
+        print("   Dùng: download | process | split | eda | all")
 
 
 if __name__ == "__main__":

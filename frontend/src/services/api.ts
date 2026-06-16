@@ -215,6 +215,80 @@ const MOCK_DRUG_GROUPS: DrugGroup[] = [
 ];
 
 // ============================================================================
+// MAPPERS: chuyển đổi snake_case (backend) ↔ camelCase (frontend)
+// Giúp chế độ API Thật khớp hợp đồng dữ liệu mà không phải sửa các component.
+// ============================================================================
+
+const mapPatientFromApi = (p: any): Patient => ({
+  id: p.id,
+  patientCode: p.patient_code,
+  fullName: p.full_name,
+  dateOfBirth: p.date_of_birth,
+  gender: p.gender,
+  phone: p.phone ?? undefined,
+  address: p.address ?? undefined,
+  bloodType: p.blood_type ?? undefined,
+  allergies: p.allergies ?? [],
+  chronicDiseases: p.chronic_diseases ?? [],
+  createdBy: p.created_by ?? undefined,
+  createdAt: p.created_at,
+});
+
+const mapPatientToApi = (d: CreatePatientRequest) => ({
+  full_name: d.fullName,
+  date_of_birth: d.dateOfBirth,
+  gender: d.gender,
+  phone: d.phone,
+  address: d.address,
+  blood_type: d.bloodType,
+  allergies: d.allergies ?? [],
+  chronic_diseases: d.chronicDiseases ?? [],
+});
+
+const mapRecordFromApi = (r: any): MedicalRecord => ({
+  id: r.id,
+  recordCode: r.record_code,
+  patientId: r.patient_id,
+  createdBy: r.created_by,
+  chiefComplaint: r.chief_complaint,
+  description: r.description ?? undefined,
+  symptomsDuration: r.symptoms_duration ?? undefined,
+  vitalSigns: r.vital_signs ?? undefined,
+  diagnosis: r.diagnosis ?? undefined,
+  diagnosisIcd: r.diagnosis_icd ?? undefined,
+  severity: r.severity,
+  status: r.status,
+  createdAt: r.created_at,
+});
+
+const mapRecordToApi = (d: CreateRecordRequest) => ({
+  patient_id: d.patientId,
+  chief_complaint: d.chiefComplaint,
+  description: d.description,
+  symptoms_duration: d.symptomsDuration,
+  vital_signs: d.vitalSigns,
+  severity: d.severity ?? "mild",
+});
+
+const mapPredictionFromApi = (p: any): Prediction => ({
+  id: p.id,
+  recordId: p.record_id,
+  modelConfigId: p.model_config_id ?? "",
+  predictedGroups: (p.predicted_groups ?? []).map((g: any) => ({
+    drugGroupId: g.drug_group_id,
+    drugGroupName: g.drug_group_name ?? "",
+    confidence: g.confidence ?? 0,
+    rank: g.rank ?? 0,
+  })),
+  top1GroupId: p.top1_group_id ?? undefined,
+  top1Confidence: p.top1_confidence ?? undefined,
+  processingTimeMs: p.processing_time_ms ?? undefined,
+  isConfirmed: p.is_confirmed ?? false,
+  confirmedGroupId: p.confirmed_group_id ?? undefined,
+  createdAt: p.created_at,
+});
+
+// ============================================================================
 // API ENDPOINTS IMPLEMENTATION
 // ============================================================================
 
@@ -279,18 +353,18 @@ export const predictDrugGroups = async (
     });
   }
 
-  const response = await api.post<{ results: PredictionResult[]; latency_ms: number }>("/v1/predict", {
+  const start = performance.now();
+  const response = await api.post<{ results: PredictionResult[]; source: string }>("/v1/predictions/predict", {
     text,
-    specialty_id: specialtyId,
     top_k: 3
   });
-  return response.data;
+  return { results: response.data.results, latency_ms: Math.round(performance.now() - start) };
 };
 
 // 3. Giải thích dự đoán (XAI Explain)
 export const explainPrediction = async (
-  text: string, 
-  specialtyId: string
+  text: string,
+  _specialtyId: string
 ): Promise<XAIToken[]> => {
   if (isDemoMode()) {
     return new Promise((resolve) => {
@@ -330,11 +404,11 @@ export const explainPrediction = async (
     });
   }
 
-  const response = await api.post<XAIToken[]>("/v1/predict/explain", {
+  const response = await api.post<{ predictions: unknown[]; tokens: XAIToken[] }>("/v1/predictions/predict/explain", {
     text,
-    specialty_id: specialtyId
+    top_k: 3
   });
-  return response.data;
+  return response.data.tokens;
 };
 
 // 4. Lấy lịch sử dự đoán (Prediction History)
@@ -377,10 +451,18 @@ export const getHistory = async (
     });
   }
 
-  const response = await api.get<PaginatedResponse<Prediction>>("/v1/predict/history", {
-    params: { page, limit, specialty_id: specialtyId }
-  });
-  return response.data;
+  const response = await api.get<{ items: unknown[]; total: number; page: number; limit: number }>(
+    "/v1/predictions/history",
+    { params: { page, limit, specialty_id: specialtyId } }
+  );
+  const data = response.data;
+  return {
+    items: data.items.map(mapPredictionFromApi),
+    total: data.total,
+    page: data.page,
+    pageSize: data.limit,
+    totalPages: Math.ceil(data.total / data.limit) || 1,
+  };
 };
 
 // 5. Lấy danh sách bệnh nhân
@@ -403,10 +485,10 @@ export const getPatients = async (search?: string): Promise<Patient[]> => {
     });
   }
 
-  const response = await api.get<Patient[]>("/v1/patients", {
+  const response = await api.get<any[]>("/v1/patients", {
     params: { search }
   });
-  return response.data;
+  return response.data.map(mapPatientFromApi);
 };
 
 // 6. Tạo mới bệnh nhân
@@ -430,8 +512,8 @@ export const createPatient = async (patientData: CreatePatientRequest): Promise<
     });
   }
 
-  const response = await api.post<Patient>("/v1/patients", patientData);
-  return response.data;
+  const response = await api.post<any>("/v1/patients", mapPatientToApi(patientData));
+  return mapPatientFromApi(response.data);
 };
 
 // 7. Lấy lịch sử bệnh án của 1 bệnh nhân
@@ -445,10 +527,10 @@ export const getPatientRecords = async (patientId: string): Promise<MedicalRecor
     });
   }
 
-  const response = await api.get<MedicalRecord[]>("/v1/records", {
+  const response = await api.get<any[]>("/v1/records", {
     params: { patient_id: patientId }
   });
-  return response.data;
+  return response.data.map(mapRecordFromApi);
 };
 
 // 8. Tạo bệnh án mới kèm kết quả dự đoán
@@ -477,8 +559,8 @@ export const createRecord = async (recordData: CreateRecordRequest): Promise<Med
     });
   }
 
-  const response = await api.post<MedicalRecord>("/v1/records", recordData);
-  return response.data;
+  const response = await api.post<any>("/v1/records", mapRecordToApi(recordData));
+  return mapRecordFromApi(response.data);
 };
 
 // Lưu kết quả dự đoán mới vào lịch sử (chỉ dùng ở chế độ Demo)
@@ -528,8 +610,21 @@ export const getAnalyticsOverview = async (): Promise<DashboardStats> => {
     });
   }
   
-  const response = await api.get<DashboardStats>("/analytics/overview");
-  return response.data;
+  const response = await api.get<{
+    total_patients: number;
+    total_records: number;
+    total_predictions: number;
+    total_drug_groups: number;
+  }>("/analytics/overview");
+  const d = response.data;
+  return {
+    totalPatients: d.total_patients ?? 0,
+    totalRecords: d.total_records ?? 0,
+    totalPredictions: d.total_predictions ?? 0,
+    confirmedPredictions: 0,
+    averageAccuracy: 0,
+    modelVersion: "xlm-roberta-lora",
+  };
 };
 
 export const getAnalyticsDailyUsage = async (): Promise<{ date: string; predictions: number }[]> => {
@@ -553,8 +648,11 @@ export const getAnalyticsDailyUsage = async (): Promise<{ date: string; predicti
     });
   }
 
-  const response = await api.get<{ date: string; predictions: number }[]>("/analytics/daily-usage");
-  return response.data;
+  const response = await api.get<{ date: string; count: number }[]>(
+    "/analytics/search_logs/daily-usage",
+    { params: { days: 30 } }
+  );
+  return response.data.map((d) => ({ date: d.date, predictions: d.count }));
 };
 
 export const getAnalyticsDrugDistribution = async (): Promise<{ name: string; count: number }[]> => {
@@ -573,6 +671,8 @@ export const getAnalyticsDrugDistribution = async (): Promise<{ name: string; co
     });
   }
 
-  const response = await api.get<{ name: string; count: number }[]>("/analytics/drug-group-distribution");
-  return response.data;
+  const response = await api.get<{ group: string; count: number }[]>(
+    "/analytics/search_logs/drug-group-distribution"
+  );
+  return response.data.map((d) => ({ name: d.group, count: d.count }));
 };

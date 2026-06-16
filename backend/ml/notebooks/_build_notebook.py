@@ -500,10 +500,12 @@ def load_openfda(base, cap_per_file=20000):
 
 
 def load_vietnamese():
-    """HoangHa/medical-data (vietnamese). Cần Internet=ON. Nhãn -> category bằng từ khóa."""
+    """HoangHa/medical-data & ViMedAQA. Cần Internet=ON. Nhãn -> category bằng từ khóa."""
     rows, unmatched = [], Counter()
     try:
         from datasets import load_dataset
+        
+        # 1. HoangHa
         ds = load_dataset("HoangHa/medical-data", "vietnamese", split="train",
                           trust_remote_code=True)
         for r in ds:
@@ -524,6 +526,24 @@ def load_vietnamese():
                 unmatched[disease] += 1
         print(f"   🇻🇳 HoangHa: +{len(rows)} mẫu. Top bệnh CHƯA map:",
               [d for d, _ in unmatched.most_common(8)])
+              
+        # 2. ViMedAQA
+        rows_vimedaqa = []
+        try:
+            ds_vimedaqa = load_dataset("tmnam20/ViMedAQA", split="train", trust_remote_code=True)
+            for r in ds_vimedaqa:
+                q = str(r.get("question", ""))
+                a = str(r.get("answer", ""))
+                txt = clean_text(q)
+                ans = clean_text(a)
+                cat = vi_category(txt + " " + ans)
+                if cat and len(txt) > 10:
+                    rows_vimedaqa.append(_row(txt, "", cat, "vimedaqa", lang="vi"))
+            rows.extend(rows_vimedaqa)
+            print(f"   🇻🇳 ViMedAQA: +{len(rows_vimedaqa)} mẫu.")
+        except Exception as e:
+            print("   ⚠️ Bỏ qua ViMedAQA:", e)
+            
     except Exception as e:
         print("   ⚠️ Bỏ qua dữ liệu VI (cần Internet=ON):", e)
     return rows

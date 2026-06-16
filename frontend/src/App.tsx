@@ -238,9 +238,9 @@ export default function App() {
       } else {
         toast.success("Phân tích kết quả thành công!");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err.message || "Đã xảy ra lỗi khi kết nối dịch vụ API!");
+      toast.error(err instanceof Error ? err.message : "Đã xảy ra lỗi khi kết nối dịch vụ API!");
     } finally {
       setIsLoading(false);
     }
@@ -374,6 +374,7 @@ export default function App() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 text-text hover:text-primary transition-colors rounded-lg"
               aria-expanded={isMobileMenuOpen}
+              aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -399,7 +400,7 @@ export default function App() {
         <main className="max-w-6xl mx-auto px-6 py-24 flex flex-col items-center text-center" id="overview">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-primary text-sm font-semibold mb-8 border border-blue-100/50">
             <Zap className="w-4 h-4 animate-bounce" /> 
-            Zero-latency Switching & Sub-quadratic Complexity
+            Cross-lingual NLP · Dynamic LoRA Switching · XAI Ready
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold font-heading text-text leading-[1.1] mb-6 max-w-4xl tracking-tight">
             Dự đoán Nhóm thuốc với <br/>
@@ -408,7 +409,7 @@ export default function App() {
             </span>
           </h1>
           <p className="text-xl text-text/75 mb-12 max-w-2xl leading-relaxed">
-            Hệ thống hỗ trợ quyết định lâm sàng thế hệ mới. Áp dụng kiến trúc Dynamic Expert Switching giúp phân loại bệnh án tiếng Việt với độ trễ tính bằng mili-giây, tích hợp bản đồ nhiệt giải thích XAI.
+            Hệ thống hỗ trợ quyết định lâm sàng thế hệ mới. Áp dụng kiến trúc Dynamic Expert Switching với XLM-RoBERTa đa ngữ giúp phân loại bệnh án tiếng Việt chính xác, độ trễ tính bằng mili-giây, tích hợp bản đồ nhiệt giải thích XAI.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
             <button 
@@ -432,7 +433,7 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex flex-col items-center text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-heading text-text mb-4">Kiến trúc Dynamic Expert Switching</h2>
-              <p className="text-text/75 max-w-2xl text-lg">Tận dụng tốc độ của State Space Model và tính chuyên biệt của nhiều LoRA Adapters khác nhau cho từng chuyên khoa.</p>
+              <p className="text-text/75 max-w-2xl text-lg">Tận dụng sức mạnh đa ngữ của XLM-RoBERTa và tính chuyên biệt của nhiều LoRA Adapters khác nhau cho từng chuyên khoa.</p>
             </div>
             
             {/* Visual Workflow */}
@@ -453,7 +454,7 @@ export default function App() {
                     <Layers className="w-6 h-6 animate-pulse" />
                   </div>
                   <h3 className="font-bold text-lg mb-2 text-primary">2. Multi-LoRA Loading</h3>
-                  <p className="text-sm text-text/75">Nạp động Adapter tương ứng vào XLM-RoBERTa Base Model đang chạy.</p>
+                  <p className="text-sm text-text/75">Nạp động (Dynamic Loading) Adapter .safetensors tương ứng vào XLM-RoBERTa Base Model đang chạy trên RAM.</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col items-center text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
@@ -461,7 +462,7 @@ export default function App() {
                     <BrainCircuit className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-lg mb-2">3. AI Inference</h3>
-                  <p className="text-sm text-text/75">Model thực hiện dự đoán phân loại đa nhãn với độ trễ tối thiểu.</p>
+                  <p className="text-sm text-text/75">XLM-RoBERTa + LoRA thực hiện dự đoán phân loại đa nhãn với cơ chế attention đa ngữ, hỗ trợ tiếng Việt tự nhiên với độ trễ tối thiểu.</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl border-2 border-cta/20 shadow-lg shadow-cta/5 flex flex-col items-center text-center transform lg:-translate-y-4 hover:shadow-xl hover:scale-102 transition-all duration-300">
@@ -489,8 +490,8 @@ export default function App() {
                 <Cpu className="w-10 h-10 text-primary mb-6" />
                 <h3 className="text-xl font-bold font-heading mb-4">Core AI & ML</h3>
                 <ul className="space-y-3 text-text/75">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> XLM-RoBERTa + LoRA</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Hugging Face PEFT</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> XLM-RoBERTa (Multilingual) + LoRA</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Hugging Face PEFT (LoRA)</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> PyTorch Framework</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> LIME/SHAP explainability</li>
                 </ul>
@@ -527,11 +528,6 @@ export default function App() {
               <span className="text-xl font-bold font-heading">Drug-Pred AI</span>
             </div>
             <div className="flex flex-col items-center md:items-end gap-2">
-              <div className="flex gap-4 text-sm text-white/50">
-                <button onClick={() => setView('404')} className="hover:text-white">Demo 404</button>
-                <span>|</span>
-                <button onClick={() => setView('error')} className="hover:text-white">Demo Error</button>
-              </div>
               <p className="text-white/50 text-sm">© 2026 PJ-Medicine. Phục vụ mục đích Nghiên cứu.</p>
             </div>
           </div>
@@ -554,6 +550,7 @@ export default function App() {
               onClick={() => setView('landing')}
               className="p-1.5 hover:bg-white border hover:border-gray-200 rounded-md transition text-text/75"
               title="Về Landing Page"
+              aria-label="Về Landing Page"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -650,7 +647,7 @@ export default function App() {
             <div>
               <h3 className="text-xs font-bold text-text/75 uppercase tracking-wider mb-3">2. Bệnh án mẫu</h3>
               <div className="flex flex-col gap-3">
-                {activeSpecialty.cases.map((c: any, i: number) => (
+                {activeSpecialty.cases.map((c: { title: string; text: string; }, i: number) => (
                   <div 
                     key={i}
                     role="button"
@@ -668,11 +665,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Demo View Toggles */}
-        <div className="p-4 border-t border-gray-100 flex justify-between text-xs text-text/75 bg-gray-50/50 mt-auto">
-          <button onClick={() => setView('404')} className="hover:text-primary font-medium">Demo 404</button>
-          <button onClick={() => setView('error')} className="hover:text-primary font-medium">Demo Error</button>
-        </div>
       </aside>
 
       {/* Main Content Pane */}

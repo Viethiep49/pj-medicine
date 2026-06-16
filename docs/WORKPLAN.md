@@ -42,7 +42,7 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Cập nhật `data_pipeline.py` import từ `taxonomy.py` thay vì định nghĩa lại
 - [ ] Xóa hàm `translate_dataset()` — XLM-RoBERTa xử lý đa ngữ, không cần dịch
 - [ ] Sửa lệnh `all`: `download → process → split → eda` (bỏ translate)
-- [ ] Chạy `python data_pipeline.py download` để tải 6 datasets
+- [x] Chạy `python data_pipeline.py download` để tải 6 datasets
 
 ### Backend Developer
 - [x] Implement SQLAlchemy models (`backend/app/models/`):
@@ -99,7 +99,7 @@ XLM-RoBERTa    PostgreSQL       Redis
       device_info       JSONB
   );
   ```
-- [ ] Design analytics endpoints (tài liệu, chưa code):
+- [x] Design analytics endpoints (tài liệu, chưa code):
   - `GET /api/analytics/overview` — tổng dự đoán, accuracy rate
   - `GET /api/analytics/popular-symptoms` — triệu chứng hay tìm nhất
   - `GET /api/analytics/drug-group-distribution` — phân bố nhóm thuốc
@@ -114,7 +114,7 @@ XLM-RoBERTa    PostgreSQL       Redis
 ##  — Implement Core
 
 ### ML Engineer
-- [ ] Implement `backend/ml/inference.py` thật (từ notebook cell cuối):
+- [x] Implement `backend/ml/inference.py` thật (từ notebook cell cuối):
   - Load `xlm-roberta-base` + `best_model.pt` + `label_map.json` + `tokenizer/`
   - `load_model(model_path)` — gọi 1 lần lúc startup
   - `predict_drug_groups(text, top_k=3)` — trả `list[PredictionResult]`
@@ -137,9 +137,9 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [x] Register routers vào `main.py`
 
 ### Frontend Dev 1
-- [ ] Build `SpecialtySelector` component — tabs chuyên khoa với icon
-- [ ] Build `ClinicalInput` component — textarea + trường sinh hiệu (nhiệt độ, HA, SpO2, nhịp thở)
-- [ ] Build `XAIPanel` component — hiển thị token với màu heatmap (đỏ cao → xanh thấp)
+- [x] Build `SpecialtySelector` component — tabs chuyên khoa với icon
+- [x] Build `ClinicalInput` component — textarea + trường sinh hiệu (nhiệt độ, HA, SpO2, nhịp thở)
+- [x] Build `XAIPanel` component — hiển thị token với màu heatmap (đỏ cao → xanh thấp)
 - [x] Thiết kế `HistoryPage` layout
 
 ### Frontend Dev 2
@@ -149,15 +149,15 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [x] Load danh sách chuyên khoa từ `api.getDrugGroups()` thay hardcode
 
 ### Data & Analytics
-- [ ] Implement `backend/app/api/analytics.py`:
+- [x] Implement `backend/app/api/analytics.py`:
   - `GET /api/analytics/overview` — COUNT predictions, AVG confidence, total patients
-  - `GET /api/analytics/popular-symptoms` — full-text search trên `search_logs.input_text`
-  - `GET /api/analytics/drug-group-distribution` — GROUP BY top1_group
+  - [ ] `GET /api/analytics/popular-symptoms` — full-text search trên `search_logs.input_text`
+  - [ ] `GET /api/analytics/drug-group-distribution` — GROUP BY top1_group
 - [ ] Implement `backend/app/services/analytics_service.py` — raw SQL aggregation queries
 - [ ] Implement middleware `search_log_middleware.py` — auto-log mỗi `/predict` request vào `search_logs`
 
 ### Documentation
-- [ ] Viết `docs/API.md` — mô tả tất cả endpoints (request/response JSON examples)
+- [x] Viết `docs/API.md` — mô tả tất cả endpoints (request/response JSON examples)
 - [ ] Viết `docs/DATABASE.md` — sơ đồ ER, mô tả bảng, indexes
 - [ ] Thêm Swagger `summary`, `description`, `response_model` vào mỗi endpoint
 
@@ -166,9 +166,9 @@ XLM-RoBERTa    PostgreSQL       Redis
 ##  — Tích hợp & Tính năng nâng cao
 
 ### ML Engineer
-- [ ] Chạy training notebook trên Kaggle GPU T4 — thu `best_model.pt` + `label_map.json` + `tokenizer/`
-- [ ] Đặt weights vào `backend/ml/models/weights/`
-- [ ] Test inference end-to-end: text tiếng Việt → Python → FastAPI → JSON response
+- [x] Chạy training notebook trên Kaggle GPU T4 — thu `best_model.pt` + `label_map.json` + `tokenizer/`
+- [x] Đặt weights vào `backend/ml/models/weights/`
+- [x] Test inference end-to-end: text tiếng Việt → Python → FastAPI → JSON response
 - [ ] Ghi kết quả vào `docs/training_results.md` (accuracy, macro-F1, confusion matrix, per-class)
 
 ### Backend Developer
@@ -205,7 +205,7 @@ XLM-RoBERTa    PostgreSQL       Redis
 ### Documentation
 - [ ] Viết `docs/TRAINING_GUIDE.md` — hướng dẫn train step-by-step trên Kaggle
 - [ ] Viết `docs/DEPLOYMENT.md` — hướng dẫn deploy production với Docker Compose
-- [ ] Update `techstack.md` — sửa tất cả references Mamba → XLM-RoBERTa
+- [x] Update `techstack.md` — sửa tất cả references Mamba → XLM-RoBERTa
 
 ---
 
@@ -218,20 +218,20 @@ XLM-RoBERTa    PostgreSQL       Redis
 - [ ] Chuẩn bị 5 demo cases tiếng Việt với expected output rõ ràng
 
 ### Backend Developer
-- [ ] Viết pytest tests: `/predict`, `/drug-groups`, `/analytics/overview`, health check
-- [ ] Implement rate limiting: 20 requests/phút per IP (slowapi)
-- [ ] Thêm structured logging (loguru) — JSON format mỗi request
+- [x] Viết pytest tests: `/predict`, `/drug-groups`, `/analytics/overview`, health check
+- [x] Implement rate limiting: 20 requests/phút per IP (slowapi)
+- [x] Thêm structured logging (loguru) — JSON format mỗi request
 - [ ] Fix tất cả bug phát hiện từ integration testing
 
 ### Frontend Dev 1
-- [ ] Polish landing page: hover animation, scroll smooth, mobile nav
-- [ ] Loading shimmer skeleton cho mọi async component
+- [x] Polish landing page: hover animation, scroll smooth, mobile nav
+- [x] Loading shimmer skeleton cho mọi async component
 - [ ] Accessibility audit: `aria-label`, keyboard navigation, color contrast
-- [ ] Build trang 404 và error page
+- [x] Build trang 404 và error page
 
 ### Frontend Dev 2
 - [ ] End-to-end test: chạy 5 demo cases, verify kết quả hiển thị đúng
-- [ ] Fix edge cases: text < 10 ký tự, API timeout > 5s, empty response
+- [x] Fix edge cases: text < 10 ký tự, API timeout > 5s, empty response
 - [ ] TypeScript strict — 0 `any`, 0 type errors
 - [ ] Cross-browser test: Chrome, Firefox, Safari
 
@@ -269,6 +269,7 @@ XLM-RoBERTa    PostgreSQL       Redis
 | POST   | `/api/v1/patients` | Backend | 3 |
 | GET    | `/api/v1/records` | Backend | 3 |
 | POST   | `/api/v1/records` | Backend | 3 |
+
 
 | GET    | `/api/analytics/overview` | Data | 2 |
 | GET    | `/api/analytics/popular-symptoms` | Data | 2 |

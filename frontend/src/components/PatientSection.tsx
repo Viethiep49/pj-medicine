@@ -344,7 +344,7 @@ export default function PatientSection({ onSelectPatientForPrediction }: Patient
                   <label className="block text-xs font-bold text-text/75 mb-1.5">Giới tính *</label>
                   <select
                     value={newGender}
-                    onChange={(e) => setNewGender(e.target.value as any)}
+                    onChange={(e) => setNewGender(e.target.value as "male" | "female" | "other")}
                     className="w-full p-2.5 border-2 border-gray-100 bg-gray-50/50 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
                   >
                     <option value="male">Nam</option>

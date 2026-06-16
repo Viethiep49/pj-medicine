@@ -14,3 +14,11 @@ class PredictionResultItem(BaseModel):
 class PredictionResponse(BaseModel):
     results: List[PredictionResultItem]
     source: str = "model" # "model" or "cache"
+
+class XAITokenSchema(BaseModel):
+    token: str
+    score: float
+
+class ExplainResponse(BaseModel):
+    predictions: List[PredictionResultItem]
+    tokens: List[XAITokenSchema]

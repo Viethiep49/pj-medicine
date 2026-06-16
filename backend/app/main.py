@@ -17,6 +17,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.limiter import limiter
+from app.middleware.search_log_middleware import SearchLogMiddleware
 
 # Setup Loguru
 logging.getLogger("uvicorn.access").handlers = []
@@ -77,6 +78,7 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
+app.add_middleware(SearchLogMiddleware)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
