@@ -50,8 +50,12 @@ async def lifespan(app: FastAPI):
     # Ensure ml module can be imported if running from backend root
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from ml.inference import load_model
-    
-    load_model(settings.MODEL_PATH)
+
+    try:
+        load_model(settings.MODEL_PATH)
+    except (FileNotFoundError, Exception) as e:
+        print(f"⚠️  ML model not loaded: {e}")
+        print("⚠️  Prediction endpoints will return 503. Auth/Admin/other endpoints work normally.")
         
     from passlib.context import CryptContext
     _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

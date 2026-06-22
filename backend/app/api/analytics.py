@@ -32,11 +32,12 @@ async def get_analytics_overview(db: AsyncSession = Depends(get_db)):
 @router.get("/predictions/summary", summary="Tổng kết dự đoán", description="Trả về tổng số dự đoán và độ tự tin trung bình.")
 async def get_prediction_summary(db: AsyncSession = Depends(get_db)):
     total = (await db.execute(select(func.count(Prediction.id)))).scalar() or 0
-    avg_confidence = (await db.execute(select(func.avg(Prediction.confidence)))).scalar()
+    avg_result = await db.execute(text("SELECT AVG(top1_confidence) FROM predictions"))
+    avg_confidence = avg_result.scalar()
 
     return {
         "total_predictions": total,
-        "average_confidence": round(avg_confidence, 4) if avg_confidence else 0,
+        "average_confidence": round(float(avg_confidence), 4) if avg_confidence else 0,
     }
 
 
@@ -47,7 +48,7 @@ async def get_records_by_severity(db: AsyncSession = Depends(get_db)):
         .group_by(MedicalRecord.severity)
     )
     rows = result.all()
-    return {row[0]: row[1] for row in rows if row[0]}
+    return [{"severity": row[0], "count": row[1]} for row in rows if row[0]]
 
 
 @router.get("/records/status", summary="Phân bố theo trạng thái", description="Số lượng bệnh án theo trạng thái.")
@@ -57,7 +58,7 @@ async def get_records_by_status(db: AsyncSession = Depends(get_db)):
         .group_by(MedicalRecord.status)
     )
     rows = result.all()
-    return {row[0]: row[1] for row in rows if row[0]}
+    return [{"status": row[0], "count": row[1]} for row in rows if row[0]]
 
 
 @router.get("/search_logs/popular-symptoms", summary="Triệu chứng phổ biến", description="Top 10 triệu chứng được tìm kiếm nhiều nhất.")
