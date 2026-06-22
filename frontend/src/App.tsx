@@ -1,35 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
-  Activity,
-  Stethoscope,
-  CheckCircle2,
-  Users,
-  User,
-  AlertCircle,
-  BrainCircuit,
-  FileText,
-  Wind,
-  HeartPulse,
-  Brain,
-  Microscope,
-  ChevronLeft,
-  ArrowRight,
-  Server,
-  Layers,
-  Cpu,
-  Code2,
-  LineChart,
-  ShieldCheck,
-  Zap,
-  GitBranch,
-  Menu,
-  X,
-  ClipboardList,
-  Info,
-} from "lucide-react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { Toaster, toast } from "react-hot-toast";
+  Activity, Stethoscope, CheckCircle2, Users, User,
+  AlertCircle, BrainCircuit, FileText, Wind, HeartPulse,
+  Brain, Microscope, ChevronLeft,
+  ArrowRight, Server, Layers, Cpu, Code2, LineChart, ShieldCheck,
+  Zap, GitBranch, Menu, X, ClipboardList, Info, LogOut
+} from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { Toaster, toast } from 'react-hot-toast';
+
+// Auth
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { setUnauthorizedHandler } from './services/api';
+import LoginPage from './components/LoginPage';
 
 // API Imports
 import {
@@ -44,11 +28,10 @@ import {
 import type { Patient, PredictionResult, XAIToken } from "./types";
 
 // Lazy Loaded Components
-const HistoryPage = React.lazy(() => import("./components/HistoryPage"));
-const AnalyticsDashboard = React.lazy(
-  () => import("./components/AnalyticsDashboard"),
-);
-const PatientSection = React.lazy(() => import("./components/PatientSection"));
+const HistoryPage = React.lazy(() => import('./components/HistoryPage'));
+const AnalyticsDashboard = React.lazy(() => import('./components/AnalyticsDashboard'));
+const PatientSection = React.lazy(() => import('./components/PatientSection'));
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -157,14 +140,11 @@ function ShimmerSkeleton() {
   );
 }
 
-export default function App() {
-  const [view, setView] = useState<"landing" | "dashboard" | "404" | "error">(
-    "landing",
-  );
-  const [subView, setSubView] = useState<
-    "predict" | "patients" | "history" | "analytics"
-  >("predict");
-
+function AppInner() {
+  const auth = useAuth();
+  const [view, setView] = useState<'landing' | 'login' | 'dashboard' | 'admin' | '404' | 'error'>('landing');
+  const [subView, setSubView] = useState<'predict' | 'patients' | 'history' | 'analytics'>('predict');
+  
   // Dynamic specialties loaded from API
   const [specialties, setSpecialties] = useState<any[]>(STATIC_SPECIALTIES_MAP);
   const [activeSpecialty, setActiveSpecialty] = useState(
@@ -183,6 +163,10 @@ export default function App() {
 
   // Selected Patient for prediction flow
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => { setView('login'); });
+  }, []);
 
   // Fetch specialties (drug groups categories) at mount or mode change
   useEffect(() => {
@@ -331,6 +315,40 @@ export default function App() {
     );
   };
 
+  // --- LOGIN VIEW ---
+  if (view === 'login') {
+    return (
+      <div>
+        <Toaster position="top-right" />
+        <LoginPage
+          onSuccess={() => {
+            const token = localStorage.getItem('access_token');
+            let role = '';
+            if (token) {
+              try { role = JSON.parse(atob(token.split('.')[1])).role ?? ''; } catch { /* ignore */ }
+            }
+            setView(role === 'admin' ? 'admin' : 'dashboard');
+          }}
+        />
+      </div>
+    );
+  }
+
+  // --- ADMIN VIEW ---
+  if (view === 'admin') {
+    return (
+      <div className="min-h-screen bg-slate-950">
+        <Toaster position="top-right" />
+        <React.Suspense fallback={<div className="text-white p-8">Loading...</div>}>
+          <AdminDashboard
+            onBack={() => setView('dashboard')}
+            onLogout={() => { auth.logout(); setView('login'); }}
+          />
+        </React.Suspense>
+      </div>
+    );
+  }
+
   // --- 404 VIEW ---
   if (view === "404") {
     return (
@@ -418,37 +436,11 @@ export default function App() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-              <a
-                href="#overview"
-                className="text-text/70 hover:text-primary transition-colors"
-              >
-                Tổng quan
-              </a>
-
-              <a
-                href="#architecture"
-                className="text-text/70 hover:text-primary transition-colors"
-              >
-                Dynamic Expert Switching
-              </a>
-
-              <a
-                href="#techstack"
-                className="text-text/70 hover:text-primary transition-colors"
-              >
-                Công nghệ
-              </a>
-
-              <button className="px-5 py-2 border border-primary text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all">
-                Đăng nhập
-              </button>
-
-              <button className="px-5 py-2 bg-gradient-to-r from-primary to-cyan-500 text-white rounded-full font-semibold shadow-lg hover:scale-105 transition-all">
-                Đăng ký
-              </button>
-
+              <a href="#overview" className="text-text/70 hover:text-primary transition-colors">Tổng quan</a>
+              <a href="#architecture" className="text-text/70 hover:text-primary transition-colors">Dynamic Expert Switching</a>
+              <a href="#techstack" className="text-text/70 hover:text-primary transition-colors">Công nghệ</a>
               <button
-                onClick={() => setView("dashboard")}
+                onClick={() => auth.isAuthenticated ? setView(auth.isAdmin ? 'admin' : 'dashboard') : setView('login')}
                 className="px-6 py-2.5 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 hover:scale-105 transition-all shadow-md shadow-primary/20 flex items-center gap-2"
               >
                 Mở Clinical Demo
@@ -474,40 +466,13 @@ export default function App() {
           {/* Mobile Navigation Drawer */}
           {isMobileMenuOpen && (
             <div className="md:hidden border-b border-gray-100 bg-white/95 backdrop-blur-md px-6 py-4 flex flex-col gap-4">
-              <a
-                href="#overview"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-text/75 hover:text-primary font-medium transition py-1"
-              >
-                Tổng quan
-              </a>
-              <a
-                href="#architecture"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-text/75 hover:text-primary font-medium transition py-1"
-              >
-                Dynamic Expert Switching
-              </a>
-              <a
-                href="#techstack"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-text/75 hover:text-primary font-medium transition py-1"
-              >
-                Công nghệ
-              </a>
-
-              <button className="w-full py-2 border border-primary text-primary rounded-xl font-semibold">
-                Đăng nhập
-              </button>
-
-              <button className="w-full py-2 bg-primary text-white rounded-xl font-semibold">
-                Đăng ký
-              </button>
-
+              <a href="#overview" onClick={() => setIsMobileMenuOpen(false)} className="text-text/75 hover:text-primary font-medium transition py-1">Tổng quan</a>
+              <a href="#architecture" onClick={() => setIsMobileMenuOpen(false)} className="text-text/75 hover:text-primary font-medium transition py-1">Dynamic Expert Switching</a>
+              <a href="#techstack" onClick={() => setIsMobileMenuOpen(false)} className="text-text/75 hover:text-primary font-medium transition py-1">Công nghệ</a>
               <button
                 onClick={() => {
-                  setView("dashboard");
                   setIsMobileMenuOpen(false);
+                  auth.isAuthenticated ? setView(auth.isAdmin ? 'admin' : 'dashboard') : setView('login');
                 }}
                 className="w-full text-center px-6 py-2.5 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition shadow-md shadow-primary/20 flex items-center justify-center gap-2"
               >
@@ -540,7 +505,7 @@ export default function App() {
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
             <button
-              onClick={() => setView("dashboard")}
+              onClick={() => auth.isAuthenticated ? setView(auth.isAdmin ? 'admin' : 'dashboard') : setView('login')}
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white text-lg font-semibold rounded-xl hover:bg-primary/90 hover:scale-105 transition-all shadow-xl shadow-primary/30"
             >
               <Activity className="w-6 h-6" />
@@ -941,6 +906,34 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* User badge + Admin + Logout */}
+        <div className="px-4 py-4 border-t border-gray-100 flex flex-col gap-2 shrink-0">
+          {auth.user && (
+            <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl">
+              <User className="w-4 h-4 text-text/50 shrink-0" />
+              <span className="text-xs font-semibold text-text truncate flex-1">{auth.user.username}</span>
+              <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 bg-primary/10 text-primary rounded-md">{auth.user.role}</span>
+            </div>
+          )}
+          {auth.isAdmin && (
+            <button
+              onClick={() => setView('admin')}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition font-semibold text-xs text-text/70 hover:bg-primary/10 hover:text-primary w-full"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              Admin Panel
+            </button>
+          )}
+          <button
+            onClick={() => { auth.logout(); setView('login'); }}
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition font-semibold text-xs text-text/70 hover:bg-red-50 hover:text-red-600 w-full"
+          >
+            <LogOut className="w-4 h-4" />
+            Đăng xuất
+          </button>
+        </div>
+
       </aside>
 
       {/* Main Content Pane */}
@@ -1216,5 +1209,13 @@ export default function App() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
   );
 }

@@ -2,7 +2,7 @@
 
 ## Overview
 
-FastAPI backend for drug group prediction from Vietnamese medical descriptions.
+FastAPI backend dự đoán nhóm thuốc từ mô tả bệnh án tiếng Việt.
 
 - **Base URL**: `http://localhost:8000`
 - **Swagger UI**: `http://localhost:8000/docs`
@@ -10,19 +10,169 @@ FastAPI backend for drug group prediction from Vietnamese medical descriptions.
 
 ---
 
-## Table of Contents
+## Xác thực (Authentication)
 
-1. [System](#1-system)
-2. [Patients](#2-patients)
-3. [Medical Records](#3-medical-records)
-4. [Predictions (ML)](#4-predictions-ml)
-5. [Drug Groups](#5-drug-groups)
-6. [Analytics](#6-analytics)
-7. [Model Integration Guide](#7-model-integration-guide)
+Hệ thống dùng **JWT Bearer Token**. Sau khi login, đính kèm token vào header mọi request:
+
+```
+Authorization: Bearer <access_token>
+```
+
+Token hết hạn sau **24 giờ** (cấu hình qua `ACCESS_TOKEN_EXPIRE_MINUTES`).
 
 ---
 
-## 1. System
+## Mục lục
+
+1. [Auth](#1-auth)
+2. [Admin](#2-admin)
+3. [System](#3-system)
+4. [Patients](#4-patients)
+5. [Medical Records](#5-medical-records)
+6. [Predictions (ML)](#6-predictions-ml)
+7. [Drug Groups](#7-drug-groups)
+8. [Analytics](#8-analytics)
+
+---
+
+## 1. Auth
+
+### Login
+
+```
+POST /api/auth/login
+Content-Type: application/x-www-form-urlencoded
+```
+
+**Request Body** (form data, không phải JSON):
+```
+username=admin&password=admin123
+```
+
+**Response (200):**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
+
+**Errors:**
+- `401` — Sai username hoặc password
+- `422` — Thiếu field bắt buộc
+
+**JWT Payload** (decoded):
+```json
+{
+  "sub": "uuid-of-user",
+  "username": "admin",
+  "role": "admin",
+  "exp": 1234567890
+}
+```
+
+---
+
+## 2. Admin
+
+> Tất cả endpoint `/api/admin/*` yêu cầu token với `role = "admin"`. Trả về `403` nếu không phải admin.
+
+### Lấy danh sách users
+
+```
+GET /api/admin/users
+Authorization: Bearer <token>
+```
+
+**Response (200):**
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "admin",
+    "email": "admin@example.com",
+    "full_name": "Admin User",
+    "role": "admin",
+    "is_active": true,
+    "created_at": "2026-06-22T10:00:00",
+    "updated_at": "2026-06-22T10:00:00"
+  }
+]
+```
+
+### Tạo user mới
+
+```
+POST /api/admin/users
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "username": "bsnguyenvana",
+  "email": "nguyenvana@hospital.vn",
+  "password": "SecurePass123",
+  "full_name": "BS. Nguyễn Văn A",
+  "role": "doctor"
+}
+```
+
+`role` nhận một trong: `admin` | `doctor` | `nurse` | `researcher`
+
+**Response (201):** UserResponse (không có `password_hash`)
+
+### Cập nhật user
+
+```
+PATCH /api/admin/users/{user_id}
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body** (chỉ cần field cần đổi):
+```json
+{
+  "role": "researcher",
+  "is_active": false,
+  "full_name": "BS. Nguyễn Văn B"
+}
+```
+
+**Response (200):** UserResponse
+
+### Xóa user
+
+```
+DELETE /api/admin/users/{user_id}
+Authorization: Bearer <token>
+```
+
+**Response (204):** No content
+
+### Thống kê admin
+
+```
+GET /api/admin/stats
+Authorization: Bearer <token>
+```
+
+**Response (200):**
+```json
+{
+  "total_users": 5,
+  "users_by_role": {
+    "admin": 1,
+    "doctor": 3,
+    "nurse": 1
+  }
+}
+```
+
+---
+
+## 3. System
 
 ### Health Check
 
@@ -30,7 +180,7 @@ FastAPI backend for drug group prediction from Vietnamese medical descriptions.
 GET /api/health
 ```
 
-**Response:**
+**Response (200):**
 ```json
 {
   "status": "healthy",
@@ -41,248 +191,281 @@ GET /api/health
 
 ---
 
-## 2. Patients
+## 4. Patients
 
-### Create Patient
+### Tạo bệnh nhân
 
 ```
 POST /api/v1/patients
+Content-Type: application/json
 ```
 
 **Request Body:**
 ```json
 {
-  "full_name": "Nguyen Van A",
+  "full_name": "Nguyễn Văn A",
   "date_of_birth": "1990-05-15",
-  "gender": "Nam",
+  "gender": "male",
   "phone": "0901234567",
-  "address": "123 Le Loi, Q1, TP.HCM",
+  "address": "123 Lê Lợi, Q1, TP.HCM",
   "blood_type": "O+",
   "allergies": ["Penicillin"],
-  "chronic_diseases": ["Tieuduong"]
+  "chronic_diseases": ["Tăng huyết áp"]
 }
 ```
+
+`gender`: `male` | `female` | `other`
+`blood_type`: `A+` | `A-` | `B+` | `B-` | `AB+` | `AB-` | `O+` | `O-`
 
 **Response (201):**
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "patient_code": "BN-A1B2C3D4",
-  "full_name": "Nguyen Van A",
+  "full_name": "Nguyễn Văn A",
   "date_of_birth": "1990-05-15",
-  "gender": "Nam",
+  "gender": "male",
   "phone": "0901234567",
-  "address": "123 Le Loi, Q1, TP.HCM",
+  "address": "123 Lê Lợi, Q1, TP.HCM",
   "blood_type": "O+",
   "allergies": ["Penicillin"],
-  "chronic_diseases": ["Tieuduong"],
-  "created_at": "2026-06-16T10:00:00",
-  "updated_at": "2026-06-16T10:00:00"
+  "chronic_diseases": ["Tăng huyết áp"],
+  "created_at": "2026-06-22T10:00:00",
+  "updated_at": "2026-06-22T10:00:00"
 }
 ```
 
-### List Patients
+### Danh sách bệnh nhân
 
 ```
 GET /api/v1/patients?skip=0&limit=20
 ```
 
-**Query Parameters:**
-- `skip` (int, default 0): Offset
-- `limit` (int, default 20, max 100): Page size
-
-### Get Patient by ID
+### Lấy theo ID
 
 ```
 GET /api/v1/patients/{patient_id}
 ```
 
-### Get Patient by Code
+### Lấy theo mã bệnh nhân
 
 ```
 GET /api/v1/patients/code/{patient_code}
 ```
 
-### Update Patient
+### Cập nhật
 
 ```
 PUT /api/v1/patients/{patient_id}
 ```
 
-**Request Body:** Same as Create.
+Body: giống Create.
 
-### Delete Patient
+### Xóa
 
 ```
 DELETE /api/v1/patients/{patient_id}
 ```
 
+**Response (204)**
+
 ---
 
-## 3. Medical Records
+## 5. Medical Records
 
-### Create Record
+### Tạo hồ sơ bệnh án
 
 ```
 POST /api/v1/records
+Content-Type: application/json
 ```
 
 **Request Body:**
 ```json
 {
   "patient_id": "550e8400-e29b-41d4-a716-446655440000",
-  "chief_complaint": "Ho keo dai 3 ngay, co dom dac",
-  "description": "Benh nhan so cao 3 ngay, ho co dom mau vang",
-  "symptoms_duration": "3 ngay",
+  "chief_complaint": "Ho kéo dài 3 ngày, có đờm đặc",
+  "description": "Bệnh nhân sốt cao 3 ngày, ho có đờm màu vàng",
+  "symptoms_duration": "3 ngày",
   "vital_signs": {
     "temperature": 38.5,
     "heart_rate": 90,
-    "blood_pressure": "120/80"
+    "blood_pressure": "120/80",
+    "respiratory_rate": 22,
+    "spo2": 96
   },
-  "diagnosis": "Viem phoi",
+  "diagnosis": "Viêm phổi",
   "diagnosis_icd": "J18.9",
   "severity": "moderate"
 }
 ```
 
-**Response (201):** Returns created record with `id`, `record_code`, `status`.
+`severity`: `mild` | `moderate` | `severe` | `critical`
 
-### List Records
+**Response (201):** Record với `id`, `record_code`, `status = "pending"`
+
+### Danh sách hồ sơ
 
 ```
 GET /api/v1/records?skip=0&limit=20&patient_id={uuid}
 ```
 
-**Query Parameters:**
-- `skip`, `limit`: Pagination
-- `patient_id` (optional): Filter by patient
+`patient_id` (optional): lọc theo bệnh nhân.
 
-### Get Record by ID
+### Lấy theo ID
 
 ```
 GET /api/v1/records/{record_id}
 ```
 
-### Update Record
+### Cập nhật
 
 ```
 PUT /api/v1/records/{record_id}
 ```
 
-### Delete Record
+### Xóa
 
 ```
 DELETE /api/v1/records/{record_id}
 ```
 
+**Response (204)**
+
 ---
 
-## 4. Predictions (ML)
+## 6. Predictions (ML)
 
-### Predict Drug Groups
+### Dự đoán nhóm thuốc
 
 ```
 POST /api/v1/predictions/predict
+Content-Type: application/json
 ```
+
+**Rate limit**: 20 requests/phút
 
 **Request Body:**
 ```json
 {
-  "text": "Benh nhan so cao 3 ngay, ho co dom dac mau vang, met moi",
+  "text": "Bệnh nhân sốt cao 39°C, ho có đờm đặc màu vàng, đau tức ngực phải khi ho",
   "top_k": 3
 }
 ```
 
-**Response:**
+**Response (200):**
 ```json
 {
   "results": [
-    {
-      "drug_group_id": "8",
-      "drug_group_name": "Khang sinh",
-      "confidence": 0.8721,
-      "rank": 1
-    },
-    {
-      "drug_group_id": "7",
-      "drug_group_name": "Ho hap",
-      "confidence": 0.6543,
-      "rank": 2
-    },
-    {
-      "drug_group_id": "5",
-      "drug_group_name": "Giam dau",
-      "confidence": 0.2310,
-      "rank": 3
-    }
+    { "drug_group_id": "8", "drug_group_name": "Kháng sinh", "confidence": 0.8721, "rank": 1 },
+    { "drug_group_id": "7", "drug_group_name": "Hô hấp",    "confidence": 0.6543, "rank": 2 },
+    { "drug_group_id": "5", "drug_group_name": "Giảm đau",  "confidence": 0.2310, "rank": 3 }
   ],
   "source": "model"
 }
 ```
 
-**Notes:**
-- `source` is `"model"` for fresh predictions, `"cache"` for Redis-cached results.
-- Rate limit: 20 requests/minute.
-- Model: XLM-RoBERTa + classification head (13 drug group categories).
+`source`: `"model"` (inference mới) hoặc `"cache"` (lấy từ Redis).
+
+### Giải thích dự đoán (XAI)
+
+```
+POST /api/v1/predictions/predict/explain
+Content-Type: application/json
+```
+
+**Rate limit**: 10 requests/phút
+
+**Request Body:** Giống `/predict`
+
+**Response (200):**
+```json
+{
+  "predictions": [ /* giống /predict */ ],
+  "tokens": [
+    { "token": "sốt", "score": 0.85 },
+    { "token": " cao", "score": 0.72 },
+    { "token": " 39°C", "score": 0.68 }
+  ]
+}
+```
+
+`score > 0`: từ tác động dương (đỏ trên UI heatmap)
+`score < 0`: từ tác động âm (xanh trên UI heatmap)
+
+### Lịch sử dự đoán
+
+```
+GET /api/v1/predictions/history?page=1&limit=10&specialty_id=Respiratory
+```
+
+**Query Parameters:**
+- `page` (int, default 1)
+- `limit` (int, default 10, max 100)
+- `specialty_id` (optional): lọc theo chuyên khoa (category của drug group)
+
+**Response (200):**
+```json
+{
+  "items": [ /* danh sách prediction */ ],
+  "total": 150,
+  "page": 1,
+  "limit": 10
+}
+```
 
 ---
 
-## 5. Drug Groups
+## 7. Drug Groups
 
-### List All Drug Groups
+### Danh sách nhóm thuốc
 
 ```
 GET /api/v1/drug-groups?skip=0&limit=50
 ```
 
-### Get Drug Group by ID
+### Lấy theo ID
 
 ```
 GET /api/v1/drug-groups/{group_id}
 ```
 
-### Create Drug Group
+### Tạo nhóm thuốc
 
 ```
 POST /api/v1/drug-groups
+Content-Type: application/json
 ```
 
-**Request Body:**
 ```json
 {
-  "name": "Khang sinh - Penicillin",
+  "name": "Kháng sinh - Penicillin",
   "code": "KS-PEN",
-  "category": "Khang sinh",
-  "description": "Nhom thuoc khang sinh pho quang",
+  "category": "Respiratory",
+  "description": "Nhóm thuốc kháng sinh phổ rộng",
   "common_drugs": ["Amoxicillin", "Ampicillin"],
-  "contraindications": ["Di ung Penicillin"],
-  "side_effects": ["Di ung", "Rua mat"]
+  "contraindications": ["Dị ứng Penicillin"],
+  "side_effects": ["Phát ban", "Tiêu chảy"]
 }
 ```
 
-### Update Drug Group
+### Cập nhật / Xóa
 
 ```
-PUT /api/v1/drug-groups/{group_id}
-```
-
-### Delete Drug Group
-
-```
+PUT  /api/v1/drug-groups/{group_id}
 DELETE /api/v1/drug-groups/{group_id}
 ```
 
 ---
 
-## 6. Analytics
+## 8. Analytics
 
-### Overview
+### Tổng quan hệ thống
 
 ```
 GET /api/analytics/overview
 ```
 
-**Response:**
 ```json
 {
   "total_predictions": 150,
@@ -293,13 +476,12 @@ GET /api/analytics/overview
 }
 ```
 
-### Prediction Summary
+### Tổng kết dự đoán
 
 ```
 GET /api/analytics/predictions/summary
 ```
 
-**Response:**
 ```json
 {
   "total_predictions": 150,
@@ -307,125 +489,88 @@ GET /api/analytics/predictions/summary
 }
 ```
 
-### Records by Severity
+### Phân bố theo mức độ bệnh
 
 ```
 GET /api/analytics/records/severity
 ```
 
-**Response:**
 ```json
-{
-  "mild": 60,
-  "moderate": 45,
-  "severe": 15
-}
+{ "mild": 60, "moderate": 45, "severe": 15, "critical": 3 }
 ```
 
-### Records by Status
+### Phân bố theo trạng thái hồ sơ
 
 ```
 GET /api/analytics/records/status
 ```
 
-**Response:**
 ```json
-{
-  "pending": 30,
-  "completed": 80,
-  "cancelled": 10
-}
+{ "pending": 30, "predicted": 50, "confirmed": 35, "archived": 8 }
 ```
 
----
-
-## 7. Model Integration Guide
-
-### Architecture
+### Triệu chứng phổ biến
 
 ```
-Frontend (React)
-    ↓ HTTP POST /api/v1/predictions/predict
-Backend (FastAPI)
-    ↓ calls ml.inference.predict_drug_groups()
-ML Engine (PyTorch)
-    ↓ XLM-RoBERTa tokenizer → model → softmax
-Response (JSON)
+GET /api/analytics/search_logs/popular-symptoms?limit=10
 ```
 
-### How the Model is Connected
-
-1. **Startup**: `main.py` lifespan calls `ml.inference.load_model()`
-2. **Loading**: `load_model()` loads:
-   - Label map (`label_map.json`) — 13 drug group categories
-   - Tokenizer (`tokenizer/`) — XLMRobertaTokenizer
-   - Model weights (`best_model.pt`) — DrugGroupClassifier state dict
-3. **Inference**: `predict_drug_groups(text, top_k)`:
-   - Tokenizes input text (max_length=256)
-   - Runs forward pass through model
-   - Applies softmax to get probabilities
-   - Returns top-K results sorted by confidence
-
-### 13 Drug Group Categories
-
-| ID | Name |
-|----|------|
-| 0 | Chuyen hoa |
-| 1 | Chong viem |
-| 2 | Co xuong khop |
-| 3 | Da lieu |
-| 4 | Di ung |
-| 5 | Giam dau |
-| 6 | Huyet hoc |
-| 7 | Ho hap |
-| 8 | Khang sinh |
-| 9 | Noi tiet |
-| 10 | Than kinh |
-| 11 | Tim mach |
-| 12 | Tieu hoa |
-
-### Model Files
+### Phân bố nhóm thuốc
 
 ```
-backend/ml/models/drugpred-model/model/
-├── best_model.pt          # PyTorch model weights
-├── label_map.json         # Label → ID mapping
-└── tokenizer/
-    ├── tokenizer.json
-    └── tokenizer_config.json
+GET /api/analytics/search_logs/drug-group-distribution
 ```
 
-### Environment Variables
+### Lượng sử dụng theo ngày
 
-```env
-# ML Model
-MODEL_PATH=./ml/models/weights/
-DEFAULT_TOP_K=3
-
-# Redis (caching)
-REDIS_URL=redis://localhost:6379/0
+```
+GET /api/analytics/search_logs/daily-usage?days=30
 ```
 
-### Testing the Model
+### Xu hướng theo giờ (24h)
 
-```bash
-cd backend
-python ml/test_inference.py
 ```
+GET /api/analytics/search_logs/search-trends
+```
+
+### Hiệu năng model
+
+```
+GET /api/analytics/search_logs/model-performance
+```
+
+### Xuất CSV
+
+```
+GET /api/analytics/search_logs/export
+```
+
+Response: file `search_logs.csv` (Content-Disposition: attachment)
 
 ---
 
 ## Rate Limiting
 
-- Default: 20 requests/minute per endpoint (where configured)
-- Uses `slowapi` middleware
+| Endpoint | Limit |
+|----------|-------|
+| `POST /api/v1/predictions/predict` | 20 req/phút |
+| `POST /api/v1/predictions/predict/explain` | 10 req/phút |
+| Các endpoint khác | Không giới hạn |
+
+---
 
 ## Error Responses
 
 ```json
-{
-  "detail": "Error message here"
-}
+{ "detail": "Error message here" }
 ```
 
-Standard HTTP codes: 400, 404, 422, 500.
+| Code | Ý nghĩa |
+|------|---------|
+| 400 | Bad Request |
+| 401 | Chưa xác thực / token hết hạn |
+| 403 | Không đủ quyền (cần role admin) |
+| 404 | Không tìm thấy resource |
+| 422 | Validation error (thiếu / sai field) |
+| 429 | Rate limit vượt ngưỡng |
+| 500 | Lỗi server / model inference |

@@ -124,7 +124,9 @@ async def health_check():
 # --- Import routers here ---
 from app.api import patients_router, records_router, predictions_router, drug_groups_router, analytics_router
 from app.api import auth
+from app.api import admin as admin_api
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(admin_api.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(patients_router, prefix="/api/v1/patients", tags=["Patients"])
 app.include_router(records_router, prefix="/api/v1/records", tags=["Medical Records"])
 app.include_router(predictions_router, prefix="/api/v1/predictions", tags=["Predictions"])

@@ -19,7 +19,10 @@ import type {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
-const api = axios.create({
+let onUnauthorized: (() => void) | null = null;
+export const setUnauthorizedHandler = (handler: () => void) => { onUnauthorized = handler; };
+
+export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000, // Tăng timeout lên 30s để hỗ trợ chạy inference trên CPU không bị quá hạn
   headers: {
@@ -45,9 +48,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("access_token");
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      onUnauthorized?.();
     }
     return Promise.reject(error);
   }
