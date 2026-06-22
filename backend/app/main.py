@@ -53,6 +53,9 @@ async def lifespan(app: FastAPI):
     
     load_model(settings.MODEL_PATH)
         
+    from passlib.context import CryptContext
+    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
     async with AsyncSessionLocal() as session:
         result = await session.execute(select(User).limit(1))
         first_user = result.scalars().first()
@@ -60,7 +63,7 @@ async def lifespan(app: FastAPI):
             dummy_user = User(
                 username="admin",
                 email="admin@example.com",
-                password_hash="hashed_password",
+                password_hash=_pwd_context.hash("admin123"),
                 full_name="Admin User",
                 role="admin"
             )
@@ -120,7 +123,8 @@ async def health_check():
 
 # --- Import routers here ---
 from app.api import patients_router, records_router, predictions_router, drug_groups_router, analytics_router
-# app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+from app.api import auth
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(patients_router, prefix="/api/v1/patients", tags=["Patients"])
 app.include_router(records_router, prefix="/api/v1/records", tags=["Medical Records"])
 app.include_router(predictions_router, prefix="/api/v1/predictions", tags=["Predictions"])
