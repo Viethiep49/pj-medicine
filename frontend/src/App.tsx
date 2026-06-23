@@ -40,6 +40,19 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Maps Vietnamese taxonomy category names → English STATIC_SPECIALTIES_MAP IDs
+// Used to normalise real-API DB categories so sample cases are always found.
+const VI_TO_SPECIALTY: Record<string, string> = {
+  "Hô hấp": "Respiratory",
+  "Kháng sinh": "Respiratory",
+  "Tim mạch": "Cardiology",
+  "Thần kinh": "Neurology",
+  "Giảm đau": "Neurology",
+  "Tiêu hóa": "Gastroenterology",
+  "Nội tiết": "Endocrinology",
+  "Chuyển hóa": "Endocrinology",
+};
+
 // Fallback STATIC SPECIALTIES MAP with premium Icons & Cases
 const STATIC_SPECIALTIES_MAP = [
   {
@@ -66,6 +79,10 @@ const STATIC_SPECIALTIES_MAP = [
         title: "Tăng huyết áp vô căn",
         text: "Bệnh nhân nữ 55 tuổi, thỉnh thoảng đau đầu vùng chẩm, chóng mặt nhẹ. Huyết áp đo tại nhà dao động 150/90 - 160/95 mmHg. Nhịp tim đều 80 l/p. ECG không có dấu hiệu thiếu máu cơ tim.",
       },
+      {
+        title: "Suy tim sung huyết (CHF)",
+        text: "Bệnh nhân nam 68 tuổi, khó thở khi gắng sức và nằm đầu thấp, phù 2 chân, tiếng tim S3, tĩnh mạch cổ nổi. EF 35%. Tiền sử nhồi máu cơ tim 2 năm trước.",
+      },
     ],
   },
   {
@@ -76,6 +93,10 @@ const STATIC_SPECIALTIES_MAP = [
       {
         title: "Đau nửa đầu Migraine",
         text: "Bệnh nhân nữ 28 tuổi, đau nửa đầu phải theo nhịp mạch đập, buồn nôn, sợ ánh sáng và tiếng ồn. Cơn đau kéo dài 4-6 tiếng, xuất hiện 2 lần/tháng. Không có dấu hiệu thần kinh khu trú.",
+      },
+      {
+        title: "Trầm cảm điều trị ngoại trú",
+        text: "Bệnh nhân nữ 34 tuổi, buồn bã kéo dài hơn 2 tuần, mất hứng thú, rối loạn giấc ngủ, mệt mỏi không rõ nguyên nhân. Không có ý tưởng tự tử. PHQ-9: 14 điểm.",
       },
     ],
   },
@@ -106,6 +127,81 @@ const STATIC_SPECIALTIES_MAP = [
       {
         title: "Suy giáp lâm sàng",
         text: "Bệnh nhân nữ 42 tuổi, sợ lạnh, táo bón, da khô, rụng tóc nhiều, mệt mỏi vô cớ. Mạch chậm 58 l/p. Tuyến giáp không to.",
+      },
+    ],
+  },
+  {
+    id: "Dị ứng",
+    name: "Khoa Dị Ứng",
+    icon: <AlertCircle className="w-5 h-5" />,
+    cases: [
+      {
+        title: "Viêm mũi dị ứng theo mùa",
+        text: "Bệnh nhân nữ 28 tuổi, ngứa mũi, hắt hơi liên tục 10-15 lần/loạt, chảy nước mũi trong, nghẹt mũi 2 tuần nay. Ngứa và đỏ mắt. Triệu chứng nặng hơn buổi sáng và khi tiếp xúc phấn hoa. Không sốt.",
+      },
+      {
+        title: "Mề đay cấp tính",
+        text: "Bệnh nhân nam 32 tuổi, nổi sần đỏ ngứa toàn thân xuất hiện sau ăn tôm 30 phút, phát ban lan rộng, không sưng mặt hay khó thở. Ngứa dữ dội.",
+      },
+    ],
+  },
+  {
+    id: "Chống viêm",
+    name: "Khoa Nội - Chống Viêm",
+    icon: <ShieldCheck className="w-5 h-5" />,
+    cases: [
+      {
+        title: "Viêm khớp dạng thấp đợt cấp",
+        text: "Bệnh nhân nữ 45 tuổi, cứng khớp buổi sáng kéo dài hơn 1 giờ, khớp bàn tay và cổ tay 2 bên đau sưng đối xứng, mệt mỏi. RF (+), Anti-CCP (+). Đã dùng NSAID nhưng chưa kiểm soát được.",
+      },
+      {
+        title: "Đợt cấp COPD cần Corticosteroid",
+        text: "Bệnh nhân nam 62 tuổi, tiền sử COPD nặng, khó thở vọt tăng 2 ngày, SpO2 88% khi thở khí phòng, không đáp ứng đủ với giãn phế quản. Cần steroid ngắn ngày hỗ trợ cấp cứu.",
+      },
+    ],
+  },
+  {
+    id: "Da liễu",
+    name: "Khoa Da Liễu",
+    icon: <User className="w-5 h-5" />,
+    cases: [
+      {
+        title: "Nhiễm nấm bề mặt (Tinea corporis)",
+        text: "Bệnh nhân nam 25 tuổi, ngứa vùng bẹn và đùi trong, da đỏ có vảy hình vòng ranh giới rõ, lan rộng dần 3 tuần nay. Hay đổ mồ hôi nhiều. Không sốt, không nổi hạch.",
+      },
+      {
+        title: "Herpes Zoster (Giời leo)",
+        text: "Bệnh nhân nữ 65 tuổi, đau rát nửa thân phải 2 ngày trước, sau đó xuất hiện bóng nước theo dải thần kinh liên sườn T6-T7. Tiền sử thủy đậu lúc nhỏ. VAS đau 7/10.",
+      },
+    ],
+  },
+  {
+    id: "Cơ xương khớp",
+    name: "Khoa Cơ Xương Khớp",
+    icon: <Activity className="w-5 h-5" />,
+    cases: [
+      {
+        title: "Gout cấp tính",
+        text: "Bệnh nhân nam 48 tuổi, đau dữ dội ngón chân cái bên phải khởi phát đột ngột lúc nửa đêm, sưng đỏ nóng, không chịu được đụng chạm nhẹ. Acid uric 525 µmol/L. Tiền sử gout 2 năm.",
+      },
+      {
+        title: "Thoái hóa khớp gối",
+        text: "Bệnh nhân nữ 62 tuổi, đau khớp gối 2 bên tăng khi leo cầu thang và đứng lâu, nghe tiếng lạo xạo, cứng khớp buổi sáng dưới 30 phút. X-quang: hẹp khe khớp, gai xương rõ.",
+      },
+    ],
+  },
+  {
+    id: "Huyết học",
+    name: "Khoa Huyết Học",
+    icon: <HeartPulse className="w-5 h-5" />,
+    cases: [
+      {
+        title: "Huyết khối tĩnh mạch sâu (DVT)",
+        text: "Bệnh nhân nữ 38 tuổi, hậu phẫu cắt tử cung 1 tuần, đau nhức bắp chân phải, sưng phù nhiều hơn chân trái. D-dimer tăng cao. Siêu âm Doppler: huyết khối tĩnh mạch khoeo.",
+      },
+      {
+        title: "Rung nhĩ - dự phòng thuyên tắc",
+        text: "Bệnh nhân nam 70 tuổi, rung nhĩ mãn tính không van, CHA₂DS₂-VASc 3 điểm. Cần kháng đông đường uống dự phòng đột quỵ lâu dài. Chức năng thận ổn định.",
       },
     ],
   },
@@ -176,17 +272,21 @@ function AppInner() {
     getDrugGroups()
       .then((groups) => {
         const categories = Array.from(new Set(groups.map((g) => g.category)));
-        const dynamicSpecialties = categories.map((cat) => {
-          const matched = STATIC_SPECIALTIES_MAP.find((s) => s.id === cat) || {
+        const seen = new Set<string>();
+        const dynamicSpecialties: typeof STATIC_SPECIALTIES_MAP = [];
+        for (const cat of categories) {
+          // Normalise Vietnamese taxonomy names → English specialty IDs
+          const normalizedId = VI_TO_SPECIALTY[cat] ?? cat;
+          if (seen.has(normalizedId)) continue;
+          seen.add(normalizedId);
+          const matched = STATIC_SPECIALTIES_MAP.find((s) => s.id === normalizedId) || {
+            id: normalizedId,
             name: `Khoa ${cat}`,
             icon: <Activity className="w-5 h-5" />,
             cases: [],
           };
-          return {
-            id: cat,
-            ...matched,
-          };
-        });
+          dynamicSpecialties.push({ ...matched, id: normalizedId });
+        }
         if (dynamicSpecialties.length > 0) {
           setSpecialties(dynamicSpecialties);
           setActiveSpecialty(dynamicSpecialties[0]);

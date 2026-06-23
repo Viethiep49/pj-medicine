@@ -1,9 +1,10 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class PredictionRequest(BaseModel):
     text: str
     top_k: int = 3
+    specialty_id: Optional[str] = None
 
 class PredictionResultItem(BaseModel):
     drug_group_id: str

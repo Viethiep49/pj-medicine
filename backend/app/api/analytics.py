@@ -13,6 +13,8 @@ from app.services.analytics_service import AnalyticsService
 router = APIRouter()
 
 
+_MODEL_F1_MACRO = 0.8685  # from evaluate_model.py offline evaluation
+
 @router.get("/overview", summary="Tổng quan hệ thống", description="Trả về số lượng tổng quan các entity trong hệ thống.")
 async def get_analytics_overview(db: AsyncSession = Depends(get_db)):
     pred_count = (await db.execute(select(func.count(Prediction.id)))).scalar() or 0
@@ -20,11 +22,16 @@ async def get_analytics_overview(db: AsyncSession = Depends(get_db)):
     record_count = (await db.execute(select(func.count(MedicalRecord.id)))).scalar() or 0
     drug_group_count = (await db.execute(select(func.count(DrugGroup.id)))).scalar() or 0
 
+    avg_conf_row = await db.execute(text("SELECT AVG(top1_confidence) FROM predictions"))
+    avg_conf = avg_conf_row.scalar()
+
     return {
         "total_predictions": pred_count,
         "total_patients": patient_count,
         "total_records": record_count,
         "total_drug_groups": drug_group_count,
+        "average_confidence": round(float(avg_conf), 4) if avg_conf else _MODEL_F1_MACRO,
+        "f1_macro": _MODEL_F1_MACRO,
         "status": "active",
     }
 

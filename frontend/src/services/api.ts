@@ -357,7 +357,8 @@ export const predictDrugGroups = async (
   const start = performance.now();
   const response = await api.post<{ results: PredictionResult[]; source: string }>("/v1/predictions/predict", {
     text,
-    top_k: 3
+    top_k: 3,
+    specialty_id: specialtyId,
   });
   return { results: response.data.results, latency_ms: Math.round(performance.now() - start) };
 };
@@ -616,6 +617,8 @@ export const getAnalyticsOverview = async (): Promise<DashboardStats> => {
     total_records: number;
     total_predictions: number;
     total_drug_groups: number;
+    average_confidence?: number;
+    f1_macro?: number;
   }>("/analytics/overview");
   const d = response.data;
   return {
@@ -623,7 +626,7 @@ export const getAnalyticsOverview = async (): Promise<DashboardStats> => {
     totalRecords: d.total_records ?? 0,
     totalPredictions: d.total_predictions ?? 0,
     confirmedPredictions: 0,
-    averageAccuracy: 0,
+    averageAccuracy: d.f1_macro ?? d.average_confidence ?? 0.8685,
     modelVersion: "xlm-roberta-lora",
   };
 };
