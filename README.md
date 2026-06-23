@@ -202,33 +202,12 @@ docker compose exec backend alembic upgrade head
 
 ---
 
-## Quản lý mã nguồn (Branch Strategy)
-
-```
-main        ← Nhánh sản phẩm, luôn ổn định
-develop     ← Nhánh phát triển, tích hợp các feature
-feature/*   ← Nhánh tính năng (vd: feature/analytics-dashboard)
-```
-
-Quy tắc:
-1. Tạo nhánh `feature/ten-tinh-nang` từ `develop`
-2. Khi xong, tạo Pull Request vào `develop`
-3. Khi `develop` ổn định → merge vào `main` và tạo Release
-
----
-
-## Tài liệu bổ sung (docs/)
-
-| Tài liệu | Mô tả |
-|----------|-------|
-| [API Documentation](docs/API_DOCUMENTATION.md) | Chi tiết tất cả endpoints, request/response |
-| [Database Schema & ERD](docs/DATABASE.md) | Sơ đồ ERD, mô tả 9 bảng, indexes |
-| [Data Dictionary](docs/DATA_DICTIONARY.md) | Mô tả chi tiết từng cột của từng bảng |
-| [User Story → DB Mapping](docs/USER_STORY_DB_MAPPING.md) | Liên kết giữa yêu cầu nghiệp vụ và DB |
-| [Data Flow](docs/DATA_FLOW.md) | Luồng đi dữ liệu toàn hệ thống |
-| [Model Card](docs/MODEL_CARD.md) | Chi tiết mô hình XLM-RoBERTa + LoRA |
-| [Training Guide](docs/TRAINING_GUIDE.md) | Hướng dẫn train lại mô hình AI |
-| [Deployment Guide](docs/DEPLOYMENT.md) | Hướng dẫn deploy production |
+## 📝 Tài liệu bổ sung (docs/)
+- [Tài liệu API chi tiết](docs/API_DOCUMENTATION.md)
+- [Cơ sở dữ liệu chi tiết](docs/DATABASE.md)
+- [Luồng đi dữ liệu của hệ thống](docs/DATA_FLOW.md)
+- [Model Card & Chi tiết huấn luyện](docs/MODEL_CARD.md)
+- [Hướng dẫn Train lại mô hình](docs/TRAINING_GUIDE.md)
 
 ---
 
