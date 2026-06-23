@@ -202,12 +202,18 @@ docker compose exec backend alembic upgrade head
 
 ---
 
-## 📝 Tài liệu bổ sung (docs/)
-- [Tài liệu API chi tiết](docs/API_DOCUMENTATION.md)
-- [Cơ sở dữ liệu chi tiết](docs/DATABASE.md)
-- [Luồng đi dữ liệu của hệ thống](docs/DATA_FLOW.md)
-- [Model Card & Chi tiết huấn luyện](docs/MODEL_CARD.md)
-- [Hướng dẫn Train lại mô hình](docs/TRAINING_GUIDE.md)
+## 📝 Tài liệu (docs/)
+
+| Tài liệu | Nội dung |
+|---|---|
+| [**Thiết kế Logic & Kiểm thử**](docs/DESIGN_AND_TESTING.md) | Use Case · Activity · Sequence · Kiến trúc · Wireframe · ERD · Deployment · Test Cases · Kết quả F1 |
+| [Tài liệu API chi tiết](docs/API_DOCUMENTATION.md) | Tất cả endpoints, request/response schema, auth |
+| [Cơ sở dữ liệu chi tiết](docs/DATABASE.md) | ERD đầy đủ, Data Dictionary, quan hệ bảng |
+| [Luồng đi dữ liệu](docs/DATA_FLOW.md) | Pipeline tokenizer → encoder → softmax · tiền xử lý dataset |
+| [Model Card](docs/MODEL_CARD.md) | XLM-RoBERTa + LoRA specs, hyperparameters, limitations |
+| [Hướng dẫn Train lại mô hình](docs/TRAINING_GUIDE.md) | Kaggle setup, data pipeline, training script |
+| [Hướng dẫn Deployment](docs/DEPLOYMENT.md) | Docker Compose, env vars, production checklist |
+| [Tech Stack chi tiết](docs/techstack.md) | Phân tích từng công nghệ, lý do lựa chọn |
 
 ---
 
